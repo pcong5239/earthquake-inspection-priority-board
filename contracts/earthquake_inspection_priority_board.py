@@ -384,14 +384,15 @@ def _execute_nondet_eval(
     policy_version: int,
 ) -> dict:
     def leader_fn() -> dict:
-        # 1. Fetch and render USGS event evidence
+        # 1. Fetch exact USGS response bytes. Digests are commitments to the
+        # HTTP payload, not to renderer-transformed text.
         try:
-            event_render = gl.nondet.web.render(event_url, mode="text")
-            if isinstance(event_render, dict):
-                event_text = event_render.get("text", "")
-            else:
-                event_text = str(event_render)
-            event_digest = hashlib.sha256(event_text.encode("utf-8")).hexdigest().lower()
+            event_response = gl.nondet.web.get(event_url)
+            if event_response.status != 200 or event_response.body is None:
+                raise ValueError("event source unavailable")
+            event_bytes = event_response.body
+            event_text = event_bytes.decode("utf-8", "replace")
+            event_digest = hashlib.sha256(event_bytes).hexdigest().lower()
         except Exception:
             return {
                 "decision": "UNRESOLVED",
@@ -420,14 +421,14 @@ def _execute_nondet_eval(
                 "evidence_status": "MISMATCH",
             }
 
-        # 2. Fetch and render facility evidence
+        # 2. Fetch exact facility response bytes for the same commitment rule.
         try:
-            facility_render = gl.nondet.web.render(facility_url, mode="text")
-            if isinstance(facility_render, dict):
-                facility_text = facility_render.get("text", "")
-            else:
-                facility_text = str(facility_render)
-            facility_digest = hashlib.sha256(facility_text.encode("utf-8")).hexdigest().lower()
+            facility_response = gl.nondet.web.get(facility_url)
+            if facility_response.status != 200 or facility_response.body is None:
+                raise ValueError("facility source unavailable")
+            facility_bytes = facility_response.body
+            facility_text = facility_bytes.decode("utf-8", "replace")
+            facility_digest = hashlib.sha256(facility_bytes).hexdigest().lower()
         except Exception:
             return {
                 "decision": "UNRESOLVED",

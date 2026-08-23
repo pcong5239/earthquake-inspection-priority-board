@@ -112,6 +112,11 @@ def test_ast_source_structure_and_decorators():
     source = Path(CONTRACT_PATH).read_text(encoding="utf-8")
     tree = ast.parse(source)
 
+    # Evidence digests commit to exact HTTP response bytes. Browser rendering
+    # transforms JSON/text and must never sit on the hash boundary.
+    assert source.count("gl.nondet.web.get(") == 2
+    assert "gl.nondet.web.render(" not in source
+
     contract_classes = []
     for node in tree.body:
         if isinstance(node, ast.ClassDef):
