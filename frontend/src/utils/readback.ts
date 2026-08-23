@@ -4,8 +4,8 @@
  */
 export async function pollUntilMatch(
   predicate: () => Promise<boolean>,
-  maxRetries = 5,
-  delayMs = 1000
+  maxRetries = 15,
+  delayMs = 2000
 ): Promise<boolean> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {

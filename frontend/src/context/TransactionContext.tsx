@@ -173,7 +173,7 @@ function getPhaseDescription(phase: TransactionPhase): string {
     case 'FINALIZED':
       return 'Transaction reached finality. Verifying execution result...';
     case 'EXECUTION_VERIFIED':
-      return 'Execution result verified (FINISHED_WITH_RETURN). Commencing state readback...';
+      return 'Leader execution SUCCESS verified. Commencing authoritative state readback...';
     case 'READBACK_VERIFIED':
       return 'Authoritatively reading back updated contract storage...';
     case 'SUCCESS':
