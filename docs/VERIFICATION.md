@@ -66,12 +66,16 @@ The mismatched digests were intentional test fixtures. They exercise live USGS w
 - Browser/profile: user-owned Chrome profile `v1` with injected wallets.
 - Selected provider: OKX Wallet through its exact EIP-6963 option.
 - Connected account: `0x5d598f10a428fb2039edbc3ace83351650b286e0`.
-- Authoritative readback after correcting checksum preservation: contract version `1`, operator `0x34b92E6553eaCA11A00A9d86d75d8a7881779D78`, total incident count `1`, active incident count `0`, and configured caps loaded from the release contract.
+- Final wallet-signed write: https://explorer-studio.genlayer.com/tx/0xdd9ff7a082ed142d06ac9e11efdce0e1813e9ae2a6665bb777e93d5a770de451 (`evaluate_facility(3, 1)`).
+- Independent transaction query: sender `0x5D598f10a428fB2039edbC3aCE83351650B286E0`, destination release contract, `statusName=FINALIZED`, `result_name=MAJORITY_AGREE`, leader `execution_result=SUCCESS`, empty leader stderr.
+- Authoritative post-write readback: facility `FAC-FINAL-OKX-001`, `status=UNRESOLVED`, `decision=UNRESOLVED`, `evidence_status=MISMATCH`, `evaluation_attempts=1`, `reason_codes=["EVENT_MISMATCH"]`.
+- Browser lifecycle result: the production transaction tray advanced through Validate, Sign, Submit, Consensus, Finalize, Exec Verified, Readback, and Success, then displayed `Transaction finalized and contract state authoritatively verified.`
 - Role result: the OKX account was correctly classified as `OBSERVER`; operator-only creation remained disabled.
 - Reload result: the page returned to `Connect Wallet` / disconnected state while authoritative public reads remained available.
-- No wallet-signed write is claimed: the release contract has no active incident and the selected OKX account is not the contract operator or an assigned inspector, so no valid consequential action was available to this wallet.
 - MetaMask and Rabby discovery/provider isolation remain covered by the automated wallet regression suite; this live pass used OKX as explicitly selected by the user.
 
 ### Production defect found and corrected during E2E
 
 Studionet `gen_call` resolved the deployed intelligent-contract address in its checksum-preserving form but returned `contract not found` after the frontend lowercased it. `getContractAddress()` now trims without changing case. A focused regression locks this behavior, and direct live reads confirmed that the checksum address returns version `1` while the lowercased variant fails. The UI also fails closed when authoritative metadata cannot be verified rather than presenting an unverified zero state.
+
+The first wallet-signed Vercel evaluation exposed two additional live-shape defects: `getTransactionReceipt` normalized a finalized GenLayer transaction to Ethereum-style `status=success`, and a five-second readback window was too short during Studionet RPC pressure. The frontend now polls `getTransaction`, requires `FINALIZED / MAJORITY_AGREE / leader SUCCESS`, tolerates bounded readback lag, and serializes shared contract reads with transient-only backoff. Captured-shape and RPC-recovery regressions bring the frontend suite to 54 tests.
