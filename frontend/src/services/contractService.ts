@@ -44,7 +44,16 @@ class BoundedReadQueue {
 
     this.runningCount++;
     try {
-      return await task();
+      for (let attempt = 1; ; attempt++) {
+        try {
+          return await task();
+        } catch (error) {
+          const message = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
+          const transient = /rpc|failed to fetch|server busy|429|timeout|gateway/.test(message);
+          if (!transient || attempt === 3) throw error;
+          await new Promise((resolve) => setTimeout(resolve, attempt * 750));
+        }
+      }
     } finally {
       this.runningCount--;
       if (this.queue.length > 0) {
@@ -63,7 +72,7 @@ class BoundedReadQueue {
   }
 }
 
-export const sharedReadQueue = new BoundedReadQueue(3);
+export const sharedReadQueue = new BoundedReadQueue(1);
 
 export function createReadOnlyClient() {
   return createClient({

@@ -52,7 +52,7 @@ describe('GenLayer Contract Service & Exact 14-View / 10-Write ABI Parity', () =
     vi.clearAllMocks();
   });
 
-  it('bounded FIFO read queue caps concurrent execution to 3 and processes in order', async () => {
+  it('bounded FIFO read queue serializes execution and processes in order', async () => {
     let running = 0;
     let maxObserved = 0;
     const executionOrder: number[] = [];
@@ -78,8 +78,27 @@ describe('GenLayer Contract Service & Exact 14-View / 10-Write ABI Parity', () =
     const results = await Promise.all(tasks.map((t) => t()));
 
     expect(results).toEqual([1, 2, 3, 4, 5]);
-    expect(maxObserved).toBeLessThanOrEqual(3);
+    expect(maxObserved).toBe(1);
     expect(executionOrder.length).toBe(5);
+  });
+
+  it('retries transient RPC reads but not permanent validation failures', async () => {
+    vi.useFakeTimers();
+    try {
+      const transient = vi.fn()
+        .mockRejectedValueOnce(new Error('RPC server busy'))
+        .mockResolvedValueOnce('recovered');
+      const recovered = sharedReadQueue.enqueue(transient);
+      await vi.advanceTimersByTimeAsync(750);
+      await expect(recovered).resolves.toBe('recovered');
+      expect(transient).toHaveBeenCalledTimes(2);
+
+      const permanent = vi.fn().mockRejectedValue(new Error('Malformed contract response'));
+      await expect(sharedReadQueue.enqueue(permanent)).rejects.toThrow('Malformed contract response');
+      expect(permanent).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('exercises all exact 14 view methods against contract specifications', async () => {
