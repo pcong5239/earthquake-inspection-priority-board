@@ -4,7 +4,7 @@ An evidence-bound GenLayer Studionet board that prioritizes post-earthquake faci
 
 ## Verified links
 
-- Live app: added after the verified Vercel production deployment
+- Live app: [https://earthquake-inspection-priority-boar.vercel.app](https://earthquake-inspection-priority-boar.vercel.app)
 - Studionet contract: [`0x1032C6e107863b4798B519929e7565e33DAd5cA1`](https://explorer-studio.genlayer.com/address/0x1032C6e107863b4798B519929e7565e33DAd5cA1)
 - Deployment and transaction evidence: [`docs/VERIFICATION.md`](docs/VERIFICATION.md)
 
@@ -78,6 +78,8 @@ Verified results: 75 Direct Mode tests passed; 45 frontend tests in 6 files pass
 ## Deployment
 
 The release contract was deployed from the exact reviewed source on Studionet (`61999`) in Normal/Full Consensus mode. `genlayer-js getContractCode` reproduces the approved source hash. The deployer is also the operator and sole Root Slot upgrader. An isolated same-source public `upgrade(bytes)` rehearsal reached finality and execution success without state or code drift. Full hashes, transactions, readbacks, and the failed encoding attempt are retained in [`docs/VERIFICATION.md`](docs/VERIFICATION.md).
+
+The production frontend is deployed under the `pcong` Vercel team and reads the verified release contract through `VITE_CONTRACT_ADDRESS`. Its canonical production alias is linked above.
 
 ## Security and trust boundaries
 

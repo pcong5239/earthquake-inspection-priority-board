@@ -62,6 +62,7 @@ artifacts/
 Thumbs.db
 
 # GenLayer build and deployment metadata
+.vercel/
 .hallmark/
 .downloads/
 .gltest/

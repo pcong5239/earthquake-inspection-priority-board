@@ -54,7 +54,9 @@ The mismatched digests were intentional test fixtures. They exercise live USGS w
 
 ## Remaining gates
 
-- Anonymous reviewer `POST_DEPLOY_TEST`: **APPROVED** for evidence revision `c98de960712043cc4dfb4a11e953c95b268e34c6`.
-- GitHub publication and Vercel deployment of the release revision.
+- Anonymous reviewer `POST_DEPLOY_TEST`: **APPROVED** for evidence revision `919f82ab08a70a8595debad19f1d94a92aa24b1e`.
+- Public GitHub repository: https://github.com/pcong5239/earthquake-inspection-priority-board
+- Vercel production alias: https://earthquake-inspection-priority-boar.vercel.app
+- Configured production deployment: `dpl_9gNHEF18sg8PVaSkmHe4FDxp3Fkn` (`READY`), bound to contract `0x1032C6e107863b4798B519929e7565e33DAd5cA1`.
 - Final Vercel E2E performed by the user with an independent browser wallet, including MetaMask, OKX Wallet, and Rabby selection/disconnect-on-reload checks.
 - Anonymous reviewer `POST_GITHUB_VERCEL_FINAL` approval for the same final revision and evidence package.
