@@ -58,5 +58,20 @@ The mismatched digests were intentional test fixtures. They exercise live USGS w
 - Public GitHub repository: https://github.com/pcong5239/earthquake-inspection-priority-board
 - Vercel production alias: https://earthquake-inspection-priority-boar.vercel.app
 - The Vercel project is connected to this GitHub repository; the production alias is `READY` and configured with contract `0x1032C6e107863b4798B519929e7565e33DAd5cA1`.
-- Final Vercel E2E performed by the user with an independent browser wallet, including MetaMask, OKX Wallet, and Rabby selection/disconnect-on-reload checks.
 - Anonymous reviewer `POST_GITHUB_VERCEL_FINAL` approval for the same final revision and evidence package.
+
+## Vercel browser E2E
+
+- Production alias: https://earthquake-inspection-priority-boar.vercel.app
+- Browser/profile: user-owned Chrome profile `v1` with injected wallets.
+- Selected provider: OKX Wallet through its exact EIP-6963 option.
+- Connected account: `0x5d598f10a428fb2039edbc3ace83351650b286e0`.
+- Authoritative readback after correcting checksum preservation: contract version `1`, operator `0x34b92E6553eaCA11A00A9d86d75d8a7881779D78`, total incident count `1`, active incident count `0`, and configured caps loaded from the release contract.
+- Role result: the OKX account was correctly classified as `OBSERVER`; operator-only creation remained disabled.
+- Reload result: the page returned to `Connect Wallet` / disconnected state while authoritative public reads remained available.
+- No wallet-signed write is claimed: the release contract has no active incident and the selected OKX account is not the contract operator or an assigned inspector, so no valid consequential action was available to this wallet.
+- MetaMask and Rabby discovery/provider isolation remain covered by the automated wallet regression suite; this live pass used OKX as explicitly selected by the user.
+
+### Production defect found and corrected during E2E
+
+Studionet `gen_call` resolved the deployed intelligent-contract address in its checksum-preserving form but returned `contract not found` after the frontend lowercased it. `getContractAddress()` now trims without changing case. A focused regression locks this behavior, and direct live reads confirmed that the checksum address returns version `1` while the lowercased variant fails. The UI also fails closed when authoritative metadata cannot be verified rather than presenting an unverified zero state.
