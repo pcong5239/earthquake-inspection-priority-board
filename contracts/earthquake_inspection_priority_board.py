@@ -388,7 +388,12 @@ def _execute_nondet_eval(
         # HTTP payload, not to renderer-transformed text.
         try:
             event_response = gl.nondet.web.get(event_url)
-            if event_response.status != 200 or event_response.body is None:
+            event_status = getattr(event_response, "status_code", None)
+            if event_status is None:
+                # Compatibility with the pinned Direct Mode test double; the
+                # current GenLayer runtime exposes status_code.
+                event_status = getattr(event_response, "status", 0)
+            if event_status != 200 or event_response.body is None:
                 raise ValueError("event source unavailable")
             event_bytes = event_response.body
             event_text = event_bytes.decode("utf-8", "replace")
@@ -424,7 +429,10 @@ def _execute_nondet_eval(
         # 2. Fetch exact facility response bytes for the same commitment rule.
         try:
             facility_response = gl.nondet.web.get(facility_url)
-            if facility_response.status != 200 or facility_response.body is None:
+            facility_status = getattr(facility_response, "status_code", None)
+            if facility_status is None:
+                facility_status = getattr(facility_response, "status", 0)
+            if facility_status != 200 or facility_response.body is None:
                 raise ValueError("facility source unavailable")
             facility_bytes = facility_response.body
             facility_text = facility_bytes.decode("utf-8", "replace")

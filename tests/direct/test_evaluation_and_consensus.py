@@ -427,6 +427,49 @@ def test_evidence_failure_event_unavailable(locked_incident_board, direct_vm, va
     assert "SOURCE_UNAVAILABLE" in fac["reason_codes"]
 
 
+def test_http_200_response_body_reaches_verified_evaluation(
+    locked_incident_board, direct_vm, valid_incident_params, valid_facility_factory
+):
+    """Raw HTTP 200 bodies are the exact bytes used by the digest boundary."""
+    f1 = valid_facility_factory(1, use_class="HOSPITAL", occupancy_band="HIGH")
+    mock_evaluation_journey(
+        direct_vm,
+        event_url=valid_incident_params["event_url"],
+        event_body=valid_incident_params["event_body"],
+        facility_url=f1["evidence_url"],
+        facility_body=f1["evidence_body"],
+        decision="IMMEDIATE_REVIEW",
+        priority_score=88,
+        eligible=True,
+    )
+
+    locked_incident_board.evaluate_facility(1, 1)
+    fac = json.loads(locked_incident_board.get_facility(1, 1))
+    assert fac["status"] == "DECIDED"
+    assert fac["evidence_status"] == "VERIFIED"
+
+
+@pytest.mark.parametrize(
+    "response",
+    [
+        {"status": 503, "body": "temporary upstream failure"},
+        {"status": 200, "body": None},
+    ],
+)
+def test_http_non_200_or_null_body_fails_closed(
+    locked_incident_board, direct_vm, valid_incident_params, response
+):
+    """Transport failures never reach the LLM or become policy decisions."""
+    direct_vm.mock_web(valid_incident_params["event_url"], response)
+
+    locked_incident_board.evaluate_facility(1, 1)
+    fac = json.loads(locked_incident_board.get_facility(1, 1))
+    assert fac["status"] == "UNRESOLVED"
+    assert fac["decision"] == "UNRESOLVED"
+    assert fac["evidence_status"] == "UNAVAILABLE"
+    assert fac["reason_codes"] == ["SOURCE_UNAVAILABLE"]
+
+
 def test_evidence_failure_digest_mismatch(locked_incident_board, direct_vm, valid_incident_params, valid_facility_factory):
     """Test 10: USGS event content digest mismatch yields UNRESOLVED status."""
     f1 = valid_facility_factory(1, use_class="HOSPITAL", occupancy_band="HIGH")
