@@ -509,7 +509,7 @@ export async function createIncident(
     params.event_url,
     params.expected_event_digest.toLowerCase(),
     params.region_label,
-    params.allowed_location_buckets,
+    JSON.stringify(params.allowed_location_buckets),
     params.event_occurred_at,
     params.max_event_age_seconds,
     params.slot_count,

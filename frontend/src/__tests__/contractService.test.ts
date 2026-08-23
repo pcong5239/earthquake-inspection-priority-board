@@ -341,7 +341,7 @@ describe('GenLayer Contract Service & Exact 14-View / 10-Write ABI Parity', () =
           'https://earthquake.usgs.gov/1',
           'a'.repeat(64),
           'Reg1',
-          ['A'],
+          '["A"]',
           1000,
           500,
           5,
