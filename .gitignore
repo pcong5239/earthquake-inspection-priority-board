@@ -61,6 +61,7 @@ Thumbs.db
 
 # GenLayer build and deployment metadata
 .hallmark/
+.downloads/
 .gltest/
 *.glartifact
 
