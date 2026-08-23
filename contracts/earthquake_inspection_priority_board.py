@@ -745,17 +745,36 @@ class EarthquakeInspectionPriorityBoard(gl.Contract):
     # -------------------------------------------------------------------------
 
     @gl.public.write
-    def transfer_operator(self, new_operator: Address) -> None:
+    def transfer_operator(self, new_operator: Any) -> None:
         if gl.message.sender_address != self.operator:
             raise UserError("unauthorized: caller is not operator")
 
+        normalized_operator: Address
+        if isinstance(new_operator, Address):
+            normalized_operator = new_operator
+        elif isinstance(new_operator, int) and not isinstance(new_operator, bool):
+            if new_operator < 0 or new_operator >= 2**160:
+                raise UserError("invalid operator: address integer out of range")
+            normalized_operator = Address(new_operator.to_bytes(20, "big"))
+        elif isinstance(new_operator, bytes):
+            if len(new_operator) != 20:
+                raise UserError("invalid operator: address bytes must be 20 bytes")
+            normalized_operator = Address(new_operator)
+        elif isinstance(new_operator, str):
+            raw_hex = new_operator[2:] if new_operator.startswith(("0x", "0X")) else new_operator
+            if len(raw_hex) != 40 or any(ch not in "0123456789abcdefABCDEF" for ch in raw_hex):
+                raise UserError("invalid operator: expected 40 hex characters")
+            normalized_operator = Address(bytes.fromhex(raw_hex))
+        else:
+            raise UserError("invalid operator: unsupported address encoding")
+
         zero_address = Address(b"\x00" * 20)
-        if new_operator == zero_address:
+        if normalized_operator == zero_address:
             raise UserError("invalid operator: zero address forbidden")
-        if new_operator == self.operator:
+        if normalized_operator == self.operator:
             raise UserError("invalid operator: new operator must differ")
 
-        self.operator = new_operator
+        self.operator = normalized_operator
         self.version = u32(2)
 
     @gl.public.write

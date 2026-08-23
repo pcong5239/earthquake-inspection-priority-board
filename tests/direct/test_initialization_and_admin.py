@@ -98,6 +98,15 @@ def test_operator_transfer_rejects_unauthorized_zero_and_same(
         deployed_board.transfer_operator(type(unauthorized_user)(operator_address))
 
 
+def test_operator_transfer_normalizes_studio_integer_encoding(
+    deployed_board, direct_vm, operator_address, unauthorized_user
+):
+    direct_vm.sender = operator_address
+    encoded = int.from_bytes(unauthorized_user.as_bytes, "big")
+    deployed_board.transfer_operator(encoded)
+    assert to_hex_addr(deployed_board.get_operator()) == to_hex_addr(unauthorized_user)
+
+
 def test_ast_source_structure_and_decorators():
     """AST regression verifies one contract class/decorator and the exact public surface."""
     source = Path(CONTRACT_PATH).read_text(encoding="utf-8")
