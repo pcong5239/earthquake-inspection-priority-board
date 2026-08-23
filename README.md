@@ -14,7 +14,7 @@ Emergency operators need a defensible inspection order, but a facility claimant 
 
 ## Why GenLayer is essential
 
-The contract uses GenLayer nondeterminism to render the USGS event page and facility evidence, verify their committed SHA-256 digests, and ask an LLM to classify inspection priority under the incident policy. Validators independently refetch and re-evaluate the evidence. Only a consensus-safe normalized result can affect the deterministic queue; unavailable, changed, conflicting, or malformed evidence fails closed as `UNRESOLVED`.
+The contract uses GenLayer nondeterminism to fetch the exact HTTP response bytes for the USGS event and facility evidence, verify their committed SHA-256 digests, and ask an LLM to classify inspection priority under the incident policy. Validators independently refetch and re-evaluate the evidence. Only a consensus-safe normalized result can affect the deterministic queue; unavailable, changed, conflicting, or malformed evidence fails closed as `UNRESOLVED`.
 
 ## How it works
 
@@ -73,11 +73,11 @@ npm run build
 npm audit --omit=dev
 ```
 
-Verified results: 80 Direct Mode tests passed; 56 frontend tests in 6 files passed; TypeScript typecheck and production build passed; production dependency audit found 0 vulnerabilities. Vite reports a non-blocking main-chunk size warning. The package intentionally has no lint script, so no lint result is claimed.
+Verified results: 83 Direct Mode tests passed; 56 frontend tests in 6 files passed; TypeScript typecheck and production build passed; production dependency audit found 0 vulnerabilities. Vite reports a non-blocking main-chunk size warning. The package intentionally has no lint script, so no lint result is claimed.
 
 ## Deployment
 
-The release contract was deployed from the exact reviewed source on Studionet (`61999`) in Normal/Full Consensus mode. `genlayer-js getContractCode` reproduces the approved source hash. The deployer is also the operator and sole Root Slot upgrader. An isolated same-source public `upgrade(bytes)` rehearsal reached finality and execution success without state or code drift. Full hashes, transactions, readbacks, and the failed encoding attempt are retained in [`docs/VERIFICATION.md`](docs/VERIFICATION.md).
+The release contract runs the exact PRE_DEPLOY-approved source on Studionet (`61999`) in Normal/Full Consensus mode. `genlayer-js getContractCode` reproduces the approved source hash. The Studio account remains the sole Root Slot upgrader, while the operator role was transferred to the independently connected OKX account used for the browser E2E. Full hashes, every attempted transaction, and authoritative readbacks are retained in [`docs/VERIFICATION.md`](docs/VERIFICATION.md).
 
 The production frontend is deployed under the `pcong` Vercel team and reads the verified release contract through `VITE_CONTRACT_ADDRESS`. Its canonical production alias is linked above.
 
@@ -96,5 +96,5 @@ The production frontend is deployed under the `pcong` Vercel team and reads the 
 
 - Web evidence can change or become unavailable; digest mismatch deliberately yields `UNRESOLVED` and requires a new incident/evidence commitment for a fresh claim.
 - Coarse location buckets protect against exact-coordinate publication but do not make all facility metadata anonymous.
-- The release contract's demonstrated live path is the fail-closed evidence branch; score-band boundaries, queue/waitlist ordering, assignment lifecycle, and authorization are covered by Direct Mode tests.
+- The release contract has demonstrated both a fail-closed digest-mismatch retry and a successful two-facility lifecycle: verified evaluation, deterministic queue/waitlist allocation, offer expiry, public reclaim/promotion, re-offer, inspector acknowledgment, and closure.
 - Upgrade authority depends on continued access to the recorded Studio account. If that account or Studionet state is lost, recovery may require a replacement deployment and complete re-verification.

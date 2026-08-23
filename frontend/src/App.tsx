@@ -71,7 +71,7 @@ const LIFECYCLE_STEPS = [
     num: '3',
     name: 'Consensus Evaluation',
     phaseKey: 'EVALUATING',
-    desc: 'Studionet validators independently scrape web evidence, verify SHA-256 digests, and run LLM policy scoring.',
+    desc: 'Studionet validators independently fetch exact web-response bytes, verify SHA-256 digests, and run LLM policy scoring.',
   },
   {
     num: '4',

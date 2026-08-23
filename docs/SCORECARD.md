@@ -8,23 +8,23 @@ The submission contains a real GenLayer Intelligent Contract, consensus-critical
 
 ## GenLayer fit: 4/5
 
-Evidence: GenLayer validators independently render the committed USGS and facility sources, verify observed SHA-256 digests, rerun the policy classification, and constrain consequential agreement before deterministic allocation. The live transaction ledger proves consensus evaluation and fail-closed `UNRESOLVED` allocation on Studionet.
+Evidence: GenLayer validators independently fetch the exact committed USGS and facility response bytes, verify SHA-256 digests, rerun the policy classification, and constrain consequential agreement before deterministic allocation. The live transaction ledger proves both fail-closed mismatch handling and successful consensus evaluation through deterministic allocation on Studionet.
 
 Inspected evidence: `contracts/earthquake_inspection_priority_board.py`; Direct Mode consensus tests; release transactions and readbacks in `docs/VERIFICATION.md`; release contract and Explorer.
 
-Weakness: the release evidence demonstrates the fail-closed mismatch branch rather than an authoritative real-world positive priority decision.
+Weakness: the evidence sources are purpose-built public test fixtures for a coordination demonstration, not official structural-safety determinations.
 
 ## Contract quality: 4/5
 
-Evidence: the contract implements bounded incident, facility, evaluation, allocation, assignment, reclaim, closure, history, pagination, and Root Slot upgrade state machines. Validator checks independently refetch evidence, bind exact consequential fields and observed digests, reject cross-band drift, and limit retries. Seventy-five Direct Mode tests and the finalized live matrix cover positive and negative paths.
+Evidence: the contract implements bounded incident, facility, evaluation, allocation, assignment, reclaim, closure, history, pagination, operator transfer, and Root Slot upgrade state machines. Validator checks independently refetch evidence, bind exact consequential fields and observed digests, reject cross-band drift, and limit retries. Eighty-three Direct Mode tests and the finalized live matrix cover positive and negative paths.
 
-Inspected evidence: contract source; 75 Direct Mode tests; `genvm-lint`; transaction ledger; authoritative readbacks; isolated same-source `upgrade(bytes)` rehearsal.
+Inspected evidence: contract source; 83 Direct Mode tests; `genvm-lint`; complete transaction ledger; authoritative readbacks; exact deployed-code hash parity.
 
-Weakness: queue/waitlist assignment lifecycle is exhaustively covered in Direct Mode but was not populated on the release contract because the intentionally mismatched facility remained unresolved.
+Weakness: Studionet is a development network whose shared validator/RPC capacity can delay otherwise valid operations.
 
 ## Engineering: 4/5
 
-Evidence: isolated pinned project, public reproducible repository, strict runtime guards, serialized transient-retrying RPC reads, fail-closed metadata availability, live-shape transaction finality/execution/readback reconciliation, 80 contract tests, 56 frontend tests, passing typecheck/build, zero production dependency vulnerabilities, and deployment from the exact Git commit.
+Evidence: isolated pinned project, public reproducible repository, strict runtime guards, serialized transient-retrying RPC reads, fail-closed metadata availability, live-shape transaction finality/execution/readback reconciliation, 83 contract tests, 56 frontend tests, passing typecheck/build, zero production dependency vulnerabilities, and exact deployed-source hash parity.
 
 Inspected evidence: public Git tree; Git/Vercel deployment logs; test and build output; `requirements-dev.txt`; `package-lock.json`; `vercel.json`; `docs/VERIFICATION.md`.
 
@@ -32,7 +32,7 @@ Weakness: the production JavaScript entry chunk is approximately 837 kB minified
 
 ## Frontend / UX: 4/5
 
-Evidence: the production seismic operations dashboard exposes authoritative contract reads, role-gated actions, queue/waitlist and history surfaces, accessible dialogs, explicit transaction phases, MetaMask/OKX/Rabby EIP-6963 discovery, exact-provider binding, wrong-network handling, and disconnected-on-reload behavior. Live Chrome testing with OKX completed a permissionless `evaluate_facility` write through all eight UI phases; independent checks proved `FINALIZED / MAJORITY_AGREE / SUCCESS` and facility readback with `evaluation_attempts=1`.
+Evidence: the production seismic operations dashboard exposes authoritative contract reads, role-gated actions, queue/waitlist and history surfaces, accessible dialogs, explicit transaction phases, MetaMask/OKX/Rabby EIP-6963 discovery, exact-provider binding, wrong-network handling, and disconnected-on-reload behavior. Live Chrome testing with OKX completed incident creation, two facility registrations and evaluations, allocation, offer, expiry/reclaim/promotion, re-offer, deadline acknowledgment, and closure. Every successful transaction was independently verified as `FINALIZED / MAJORITY_AGREE / SUCCESS` with authoritative readback.
 
 Inspected evidence: production Vercel application; frontend source and tests; Chrome live E2E; contract/Explorer links.
 

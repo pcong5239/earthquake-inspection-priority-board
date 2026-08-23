@@ -1,81 +1,84 @@
-# Studionet verification evidence
+# Studionet and Vercel verification evidence
 
 Verification date: 2026-08-23 (Asia/Saigon)
 
-## Revision and deployment binding
+## Exact source and deployment binding
 
-- PRE_DEPLOY-approved commit: `a64e3d74cde64259dc965662827e10bcc7518384`
-- PRE_DEPLOY-approved tree: `902bff59be82a71b3e885d205623cff2f625e664`
-- Contract source SHA-256: `7EC69DBBD15331952DA3B16929D8FE2F75DA0022FB39EF3791DDD84D8EFF65EB`
-- Locked deployer/operator: `0x34b92E6553eaCA11A00A9d86d75d8a7881779D78`
+- PRE_DEPLOY-approved source commit: `de3c5dffa28946da932bb4d40f163ea4f14ea79e`
+- PRE_DEPLOY-approved tree: `989a149c5eb5cea0d778ca96d5af729301c9cb76`
+- Contract source SHA-256: `123BE3E52F2773DC7A3CC5A45EBF6764C42E84114A480C57777586CFBD5FE8DD`
+- Contract source size: 68,995 bytes / 68,993 decoded characters
 - Contract: `0x1032C6e107863b4798B519929e7565e33DAd5cA1`
+- Operator: `0x5D598f10a428fB2039edbC3aCE83351650B286E0`
+- Sole Root Slot upgrader: `0x34b92E6553eaCA11A00A9d86d75d8a7881779D78`
 - Explorer: https://explorer-studio.genlayer.com/address/0x1032C6e107863b4798B519929e7565e33DAd5cA1
 - Studio execution mode: Normal (Full Consensus)
 
-The exact approved `contracts/earthquake_inspection_priority_board.py` file was imported through Studio's file chooser. No constructor arguments were supplied.
+The exact approved source was installed by the authorized Root Slot account. A post-upgrade `genlayer-js@1.1.8 getContractCode` read returned 68,993 characters and SHA-256 `123be3e52f2773dc7a3cc5a45ebf6764c42e84114a480c57777586cfbd5fe8dd`, matching the reviewed source.
 
-## Transaction ledger
+## Complete transaction ledger
 
-Every positive row below was independently queried with `genlayer-js@1.1.8` `getTransaction`. Required outcome was `statusName=FINALIZED`, `result_name=MAJORITY_AGREE`, and leader `execution_result=SUCCESS`.
+Each transaction hash was independently queried. Successful rows require `FINALIZED / MAJORITY_AGREE / leader SUCCESS`; expected-error rows require finality and authoritative unchanged-state reconciliation.
 
-| Case | Transaction | Outcome |
-| --- | --- | --- |
-| Deploy | https://explorer-studio.genlayer.com/tx/0xd2e97449bcee947d3f5505804e7b068be0ee36e6714fd179ca6d46d49a216d78 | FINALIZED / MAJORITY_AGREE / SUCCESS |
-| Create incident | https://explorer-studio.genlayer.com/tx/0x66f0d786d46dd4fd6b99ac03410e77210d7b7a2b462d28d53f442cad2eda800c | FINALIZED / MAJORITY_AGREE / SUCCESS |
-| Register facility | https://explorer-studio.genlayer.com/tx/0xca8ff3e058c68b18333054b4caeed2a0ee7fde355fb97685e33dd5330d752cdd | FINALIZED / MAJORITY_AGREE / SUCCESS |
-| Duplicate facility negative test | https://explorer-studio.genlayer.com/tx/0x9ca3c1dc6e277837667e512e496c0127a991ad0f8a63710e66071e19ec50ed96 | FINALIZED / MAJORITY_AGREE / ERROR; state unchanged |
-| Lock cohort | https://explorer-studio.genlayer.com/tx/0xfe0f187c2e98c677ed5bdc0785954fd4d84ab6dcdfe08bc9e52690fcc87b379c | FINALIZED / MAJORITY_AGREE / SUCCESS |
-| Evaluate facility, attempt 1 | https://explorer-studio.genlayer.com/tx/0x821b55da7a8ff838f2b5e77b2cae3e401b18fb2e72c25bace842cd02e833dec2 | FINALIZED / MAJORITY_AGREE / SUCCESS |
-| Evaluate facility, attempt 2 | https://explorer-studio.genlayer.com/tx/0x2ebe093c0cfd7464db5133793dd94f642a39010f77cebb2be87161d80e633d0c | FINALIZED / MAJORITY_AGREE / SUCCESS |
-| Finalize allocation | https://explorer-studio.genlayer.com/tx/0xce6b6e191d44603da87b8db0cc767d66886ba1bac3f532ccf3ffdbcac403d2eb | FINALIZED / MAJORITY_AGREE / SUCCESS |
-| Close incident | https://explorer-studio.genlayer.com/tx/0xeb77c31e83ce1bdc38f396e8dd9e9500b79f4f94ba73caabebbbc0488ffbbc3f | FINALIZED / MAJORITY_AGREE / SUCCESS |
+| Order | Case | Transaction or submission | Actual outcome |
+| ---: | --- | --- | --- |
+| 1 | Historical source upgrade | https://explorer-studio.genlayer.com/tx/0xae27ec9371307dadecde1b413e9c0e9b3c961cbba33de586cfa3a59b3c7a95a1 | Superseded; retained for audit only |
+| 2 | Wrong old-source upgrade | https://explorer-studio.genlayer.com/tx/0x05ceaa69ccc3e64798ac80e0f3b8126711a8aa16b5c99bc6ce9500c554933f19 | Superseded; not release proof |
+| 3 | Failed operator-transfer attempt | https://explorer-studio.genlayer.com/tx/0x18d2bc85f4510207184d40df49afaf6e2bb86011112d0ae1a7561f541faf03a8 | Finalized error; operator unchanged |
+| 4 | Failed operator-transfer attempt | https://explorer-studio.genlayer.com/tx/0xa4ad1594d066731444f0ae3862130942be027d90e374135120749b9d4ffa19a1 | Finalized error; operator unchanged |
+| 5 | Operator transfer | https://explorer-studio.genlayer.com/tx/0x1e389772cf22fd92998a8c8dbee45f51041955f7fab194c12b5e8f9dd362a5af | FINALIZED / MAJORITY_AGREE / SUCCESS; operator became OKX account |
+| 6 | Prior exact-source upgrade | https://explorer-studio.genlayer.com/tx/0x038adc19dca1b51413509baed8d372c5dc6f08366333a674c606fbf46085958d | FINALIZED / MAJORITY_AGREE / SUCCESS |
+| 7 | Incident create with malformed bucket transport | https://explorer-studio.genlayer.com/tx/0xe7729e26317a66d2e158a7abe8d72f9e54d90686ef8ff9852bffe557fd61489d | FINALIZED / MAJORITY_AGREE / ERROR; no state change |
+| 8 | Incident create | https://explorer-studio.genlayer.com/tx/0xa1ce295dea5d32ff32fe30b2b589c230807af88dc1c1945c6e042d614f558482 | FINALIZED / MAJORITY_AGREE / SUCCESS |
+| 9 | Register Alpha | https://explorer-studio.genlayer.com/tx/0x51e504546111f7e1cbf08d44b5c74280d20962c00bd2c2c66ed538f80a361ad1 | FINALIZED / MAJORITY_AGREE / SUCCESS |
+| 10 | Register Bravo | https://explorer-studio.genlayer.com/tx/0x244ad80348eced3bfbaac80512d9679d21cc4249de6a113b39b2085cc5f61001 | FINALIZED / MAJORITY_AGREE / SUCCESS |
+| 11 | Lock cohort | https://explorer-studio.genlayer.com/tx/0x81e7455bdb300c06cf5cee5d392529a74ffe2bd18f44f6dd332612cac4dca710 | FINALIZED / MAJORITY_AGREE / SUCCESS |
+| 12 | Alpha evaluation exposing raw-vs-rendered digest defect | https://explorer-studio.genlayer.com/tx/0x74d42d575e9dfb0aa631530c3c2025018b2f20cee7fae5fd2548c903bb5318ec | FINALIZED / MAJORITY_AGREE / SUCCESS; business result safely `UNRESOLVED/MISMATCH`, attempt 1 |
+| 13 | Redundant upgrade submitted before editor replacement | https://explorer-studio.genlayer.com/tx/0xf52746b6665ec724f5fa962c11cfad544454610f23e07e037c216d3cb3e3b43d | FINALIZED / MAJORITY_AGREE / upgrade success; not release proof |
+| 14 | Exact approved-source upgrade | https://explorer-studio.genlayer.com/tx/0x89017acc81e029764f56775c61b6ce58d9585ffa9751a8f86024e15d5a485393 | FINALIZED / MAJORITY_AGREE / upgrade success; code hash parity verified |
+| 15 | Alpha retry transport submission | No transaction hash returned | RPC `SUBMISSION_FAILED`; reconciled Alpha remained at attempt 1 before retry |
+| 16 | Alpha evaluation retry | https://explorer-studio.genlayer.com/tx/0x03dfe30e1c89b22f0f84c925b9e2a18f18298b03a8c160311aa051e61fec2114 | FINALIZED / MAJORITY_AGREE / SUCCESS; score 97, `IMMEDIATE_REVIEW`, `VERIFIED` |
+| 17 | Bravo evaluation | https://explorer-studio.genlayer.com/tx/0xa8f39100d81181efcde26f91754f6b4d63eea0020f784377e4d39bc99ada4fd2 | FINALIZED / MAJORITY_AGREE / SUCCESS; score 85, `IMMEDIATE_REVIEW`, `VERIFIED` |
+| 18 | Finalize allocation | https://explorer-studio.genlayer.com/tx/0x56d7eb8e4238d20d70c88adeff07e12348a47c9be22a18775207a58312a37624 | FINALIZED / MAJORITY_AGREE / SUCCESS; Alpha queue 1, Bravo waitlist 1 |
+| 19 | Offer Alpha | https://explorer-studio.genlayer.com/tx/0x1efe4cb70b1da89d12dae3a346147ae9236df33cc50f59d346d2b8fa62946121 | FINALIZED / MAJORITY_AGREE / SUCCESS |
+| 20 | Reclaim expired Alpha and promote Bravo | https://explorer-studio.genlayer.com/tx/0x9505950540743cf6d95dfb3b522ea9e0668d2a78ec876becc838695d40cb4dc0 | FINALIZED / MAJORITY_AGREE / SUCCESS; Alpha expired, Bravo queue 1 |
+| 21 | Offer Bravo | https://explorer-studio.genlayer.com/tx/0x86cba3ee767ea03f483cec7affab51be767134fa6b2459f97966f3cbca09bd3a | FINALIZED / MAJORITY_AGREE / SUCCESS |
+| 22 | Acknowledge Bravo | https://explorer-studio.genlayer.com/tx/0xbe7b4c7ff7afd8ff04592efcdb3acec79ae5c4c39b19ac918937f85d7a85583e | FINALIZED / MAJORITY_AGREE / SUCCESS; acknowledged exactly at deadline |
+| 23 | Close incident | https://explorer-studio.genlayer.com/tx/0x32be97fc93e92c181f5e8ea6ec93e1f1e7e63554ac856e8cb6fccbdcde95095a | FINALIZED / MAJORITY_AGREE / SUCCESS |
 
-## Isolated upgrade rehearsal
+## Authoritative final readback
 
-- Test deployment: `0x9c0805030D740741D3a0d9E34245E4dF114E4875`
-- Deploy: https://explorer-studio.genlayer.com/tx/0x0afa2b5ba655a02c0b7f7a4f1faba9108121f3504a7c8cce25197614a28e577f — FINALIZED / MAJORITY_AGREE / SUCCESS
-- Studio sidebar same-source replacement: https://explorer-studio.genlayer.com/tx/0x871bb63cfb2b19d86957fe0b5860c8b2cd05c8d51674030fc1614e250774e9c9 — FINALIZED / MAJORITY_AGREE; this system transaction does not expose a leader execution field and is not used as the contract-method execution proof.
-- Failed public-method encoding attempt: https://explorer-studio.genlayer.com/tx/0xedc9324e8d63338edb8af9b4d6ad52569cbb63acde4481d3360ade62b56c7138 — FINALIZED / MAJORITY_AGREE / ERROR. Studio parsed the incorrect `0x<hex>` bytes representation as an integer; traceback was `TypeError: object of type 'int' has no len()`. Code remained unchanged.
-- Successful public `upgrade(bytes)` rehearsal: https://explorer-studio.genlayer.com/tx/0x431037a72ebd265b94d3fae280f42348c8bf3d5fc91c0c68c8a7676a47c6f74f — FINALIZED / MAJORITY_AGREE / SUCCESS, empty stderr. The mechanically generated input used Studio's required `b#<hex>` bytes representation.
-- Post-upgrade finalized readback: `incident_count=0`, `version=1`, operator and sole upgrader remain the locked Studio account.
-- `genlayer-js getContractCode` SHA-256 for both the release contract and rehearsal contract after upgrade: `7EC69DBBD15331952DA3B16929D8FE2F75DA0022FB39EF3791DDD84D8EFF65EB` (67,348 bytes), exactly matching the approved source.
+- Contract: `version=2`; operator is the OKX account above; `get_active_incidents=[]`.
+- Incident 4: `status=CLOSED`, `facility_count=2`, `allocated_count=1`, `history_count=14`.
+- Alpha: score 97, `IMMEDIATE_REVIEW`, `VERIFIED`, attempts 2, assignment `EXPIRED`, queue 0, waitlist 0.
+- Bravo: score 85, `IMMEDIATE_REVIEW`, `VERIFIED`, attempts 1, assignment `ACKNOWLEDGED`, queue 1, waitlist 0, inspector is the OKX account.
+- Queue: Bravo only at slot 1; `acknowledged_at=deadline=1787500768`, proving the inclusive deadline boundary.
+- Waitlist: empty.
 
-## Authoritative finalized readbacks
+The successful incident used USGS event `us6000jllz`, committed raw-response digest `13361ad7cd54e6df126be8aa82030e7bf823e2175a7502c1aee0e687e2925baa`, one slot, and a 60-second assignment timeout. Facility evidence digests were `fde600ce11b152e73b0a6f2cb6a92d4ecbdcb1f7dfeea1348c53ce8b859f90f8` (Alpha) and `5f31e509e537af61ae4b2dc181058703dc1349acd8c7206bb4f5c0458c49fa65` (Bravo).
 
-- Immediately after deployment: `incident_count=0`, `version=1`, operator and sole upgrader equal the locked deployer.
-- After incident creation: `incident_count=1`.
-- After the duplicate registration negative test: `facility_count=1`; no duplicate record was committed.
-- After evaluation attempt 1: `decision=UNRESOLVED`, `evidence_status=MISMATCH`, `evaluation_attempts=1`.
-- After evaluation attempt 2: `decision=UNRESOLVED`, `evidence_status=MISMATCH`, `evaluation_attempts=2`, `reason_codes=["EVENT_MISMATCH"]`, reason `USGS event content digest mismatch`.
-- After allocation: incident `status=ALLOCATED`, `allocated_count=0`, facility `queue_position=0`, proving unresolved evidence cannot enter the queue.
-- After closure: incident `status=CLOSED`, `history_count=7`.
-
-The mismatched digests were intentional test fixtures. They exercise live USGS web rendering, leader/validator consensus, bounded retries, and fail-closed allocation without asserting an unverified real-world priority verdict.
-
-## Remaining gates
-
-- Anonymous reviewer `POST_DEPLOY_TEST`: **APPROVED** for evidence revision `919f82ab08a70a8595debad19f1d94a92aa24b1e`.
-- Public GitHub repository: https://github.com/pcong5239/earthquake-inspection-priority-board
-- Vercel production alias: https://earthquake-inspection-priority-boar.vercel.app
-- The Vercel project is connected to this GitHub repository; the production alias is `READY` and configured with contract `0x1032C6e107863b4798B519929e7565e33DAd5cA1`.
-- Anonymous reviewer `POST_GITHUB_VERCEL_FINAL` approval for the same final revision and evidence package.
-
-## Vercel browser E2E
+## Browser and wallet E2E
 
 - Production alias: https://earthquake-inspection-priority-boar.vercel.app
-- Browser/profile: user-owned Chrome profile `v1` with injected wallets.
-- Selected provider: OKX Wallet through its exact EIP-6963 option.
-- Connected account: `0x5d598f10a428fb2039edbc3ace83351650b286e0`.
-- Final wallet-signed write: https://explorer-studio.genlayer.com/tx/0xdd9ff7a082ed142d06ac9e11efdce0e1813e9ae2a6665bb777e93d5a770de451 (`evaluate_facility(3, 1)`).
-- Independent transaction query: sender `0x5D598f10a428fB2039edbC3aCE83351650B286E0`, destination release contract, `statusName=FINALIZED`, `result_name=MAJORITY_AGREE`, leader `execution_result=SUCCESS`, empty leader stderr.
-- Authoritative post-write readback: facility `FAC-FINAL-OKX-001`, `status=UNRESOLVED`, `decision=UNRESOLVED`, `evidence_status=MISMATCH`, `evaluation_attempts=1`, `reason_codes=["EVENT_MISMATCH"]`.
-- Browser lifecycle result: the production transaction tray advanced through Validate, Sign, Submit, Consensus, Finalize, Exec Verified, Readback, and Success, then displayed `Transaction finalized and contract state authoritatively verified.`
-- Role result: the OKX account was correctly classified as `OBSERVER`; operator-only creation remained disabled.
-- Reload result: the page returned to `Connect Wallet` / disconnected state while authoritative public reads remained available.
-- MetaMask and Rabby discovery/provider isolation remain covered by the automated wallet regression suite; this live pass used OKX as explicitly selected by the user.
+- Browser: user-owned Chrome session; selected provider: OKX Wallet through its exact EIP-6963 entry.
+- MetaMask and OKX were both discoverable in the selector; the application does not restrict judges to OKX. Rabby support is enforced by the same exact-provider implementation and automated regression suite.
+- The connected OKX account exercised the complete operator, public keeper, and assigned-inspector lifecycle recorded above.
+- Transaction UI required finality, consensus, successful execution, and authoritative readback before success.
+- Reload returned the application to `Connect Wallet` while public contract reads remained available.
 
-### Production defect found and corrected during E2E
+## Local reproducibility
 
-Studionet `gen_call` resolved the deployed intelligent-contract address in its checksum-preserving form but returned `contract not found` after the frontend lowercased it. `getContractAddress()` now trims without changing case. A focused regression locks this behavior, and direct live reads confirmed that the checksum address returns version `1` while the lowercased variant fails. The UI also fails closed when authoritative metadata cannot be verified rather than presenting an unverified zero state.
+- `genvm-lint`: PASS, validation PASS, 25 methods.
+- Direct Mode: 83/83 tests passed.
+- Frontend: strict typecheck PASS; 56/56 tests in 6 files PASS; production build PASS.
+- `npm audit --omit=dev`: 0 vulnerabilities.
+- `pip check`: no broken requirements.
+- `git diff --check`: PASS.
 
-The first wallet-signed Vercel evaluation exposed two additional live-shape defects: `getTransactionReceipt` normalized a finalized GenLayer transaction to Ethereum-style `status=success`, and a five-second readback window was too short during Studionet RPC pressure. The frontend now polls `getTransaction`, requires `FINALIZED / MAJORITY_AGREE / leader SUCCESS`, tolerates bounded readback lag, and serializes shared contract reads with transient-only backoff. Captured-shape and RPC-recovery regressions bring the frontend suite to 54 tests.
+## Release gates
+
+- Anonymous `PRE_DEPLOY`: **APPROVED** for source commit `de3c5dffa28946da932bb4d40f163ea4f14ea79e`.
+- Anonymous `POST_DEPLOY_TEST`: pending approval for the final evidence revision containing this ledger.
+- Anonymous `POST_GITHUB_VERCEL_FINAL`: pending approval for that same final revision and public deployment.
+
+The task is not complete until the two pending anonymous checkpoints and the primary AI approve the same exact final revision/evidence package.
