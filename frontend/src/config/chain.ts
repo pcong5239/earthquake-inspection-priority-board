@@ -18,7 +18,9 @@ export function isValidAddress(address: unknown): address is `0x${string}` {
 export function getContractAddress(): `0x${string}` | null {
   const envAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
   if (isValidAddress(envAddress)) {
-    return envAddress.toLowerCase() as `0x${string}`;
+    // Studionet currently resolves intelligent-contract addresses case-sensitively.
+    // Preserve the deployed checksum form; lowercasing makes valid contracts unreadable.
+    return envAddress.trim() as `0x${string}`;
   }
   return null;
 }

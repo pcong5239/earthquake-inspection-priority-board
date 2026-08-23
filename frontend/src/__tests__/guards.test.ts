@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   parseJsonSafe,
   parseActiveIncidents,
@@ -23,8 +23,18 @@ import {
   formatReasonCode,
   safeJsonStringify,
 } from '../utils/formatters';
+import { getContractAddress } from '../config/chain';
 
 describe('Strict Runtime Guards and JSON Parsing', () => {
+  it('preserves the checksum case of the configured Studionet contract address', () => {
+    const deployedAddress = '0x1032C6e107863b4798B519929e7565e33DAd5cA1';
+    vi.stubEnv('VITE_CONTRACT_ADDRESS', ` ${deployedAddress} `);
+
+    expect(getContractAddress()).toBe(deployedAddress);
+
+    vi.unstubAllEnvs();
+  });
+
   it('parses raw JSON strings safely', () => {
     expect(parseJsonSafe<number>('123')).toBe(123);
     expect(parseJsonSafe<object>('{"a":1}')).toEqual({ a: 1 });
