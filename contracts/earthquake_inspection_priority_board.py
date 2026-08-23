@@ -689,6 +689,30 @@ class EarthquakeInspectionPriorityBoard(gl.Contract):
             if ch not in "0123456789abcdef":
                 raise UserError("invalid digest: must contain only lowercase hex characters")
 
+    def _normalize_address_input(self, value: Any, label: str) -> Address:
+        normalized: Address
+        if isinstance(value, Address):
+            normalized = value
+        elif isinstance(value, int) and not isinstance(value, bool):
+            if value < 0 or value >= 2**160:
+                raise UserError(f"invalid {label}: integer out of range")
+            normalized = Address(value.to_bytes(20, "big"))
+        elif isinstance(value, bytes):
+            if len(value) != 20:
+                raise UserError(f"invalid {label}: bytes must be 20 bytes")
+            normalized = Address(value)
+        elif isinstance(value, str):
+            raw_hex = value[2:] if value.startswith(("0x", "0X")) else value
+            if len(raw_hex) != 40 or any(ch not in "0123456789abcdefABCDEF" for ch in raw_hex):
+                raise UserError(f"invalid {label}: expected 40 hex characters")
+            normalized = Address(bytes.fromhex(raw_hex))
+        else:
+            raise UserError(f"invalid {label}: unsupported encoding")
+
+        if normalized == Address(b"\x00" * 20):
+            raise UserError(f"invalid {label}: zero address forbidden")
+        return normalized
+
     def _validate_location_bucket(self, bucket: str, allowed_buckets: list[str]) -> None:
         if not bucket or len(bucket) > MAX_STRING_ID_LENGTH:
             raise UserError("invalid location bucket: length must be 1-128 characters")
@@ -749,28 +773,7 @@ class EarthquakeInspectionPriorityBoard(gl.Contract):
         if gl.message.sender_address != self.operator:
             raise UserError("unauthorized: caller is not operator")
 
-        normalized_operator: Address
-        if isinstance(new_operator, Address):
-            normalized_operator = new_operator
-        elif isinstance(new_operator, int) and not isinstance(new_operator, bool):
-            if new_operator < 0 or new_operator >= 2**160:
-                raise UserError("invalid operator: address integer out of range")
-            normalized_operator = Address(new_operator.to_bytes(20, "big"))
-        elif isinstance(new_operator, bytes):
-            if len(new_operator) != 20:
-                raise UserError("invalid operator: address bytes must be 20 bytes")
-            normalized_operator = Address(new_operator)
-        elif isinstance(new_operator, str):
-            raw_hex = new_operator[2:] if new_operator.startswith(("0x", "0X")) else new_operator
-            if len(raw_hex) != 40 or any(ch not in "0123456789abcdefABCDEF" for ch in raw_hex):
-                raise UserError("invalid operator: expected 40 hex characters")
-            normalized_operator = Address(bytes.fromhex(raw_hex))
-        else:
-            raise UserError("invalid operator: unsupported address encoding")
-
-        zero_address = Address(b"\x00" * 20)
-        if normalized_operator == zero_address:
-            raise UserError("invalid operator: zero address forbidden")
+        normalized_operator = self._normalize_address_input(new_operator, "operator")
         if normalized_operator == self.operator:
             raise UserError("invalid operator: new operator must differ")
 
@@ -1259,7 +1262,7 @@ class EarthquakeInspectionPriorityBoard(gl.Contract):
         self,
         incident_id: u32,
         facility_record_id: u32,
-        inspector: Address,
+        inspector: Any,
     ) -> None:
         if gl.message.sender_address != self.operator:
             raise UserError("unauthorized: caller is not operator")
@@ -1285,19 +1288,7 @@ class EarthquakeInspectionPriorityBoard(gl.Contract):
         if facility.assignment_status != "NONE":
             raise UserError(f"facility assignment already in state '{facility.assignment_status}'")
 
-        if isinstance(inspector, bytes):
-            if inspector == b"\x00" * 20:
-                raise UserError("invalid inspector address: zero address forbidden")
-            inspector = Address(inspector)
-        elif isinstance(inspector, str):
-            clean_hex = inspector[2:] if inspector.startswith(("0x", "0X")) else inspector
-            if clean_hex == "0" * 40:
-                raise UserError("invalid inspector address: zero address forbidden")
-            inspector = Address(bytes.fromhex(clean_hex))
-        elif hasattr(inspector, "as_bytes") and inspector.as_bytes == b"\x00" * 20:
-            raise UserError("invalid inspector address: zero address forbidden")
-        elif inspector == Address(b"\x00" * 20):
-            raise UserError("invalid inspector address: zero address forbidden")
+        inspector = self._normalize_address_input(inspector, "inspector address")
 
         # Ensure inspector does not hold another active offer in this incident
         fac_count = int(incident.facility_count)

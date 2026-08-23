@@ -331,6 +331,35 @@ describe('UI Components, Role Gating, and Modal Validation', () => {
     expect(screen.getByText(mockFacility.evidence_url)).not.toBeNull();
   });
 
+  it('FacilityDetailPane exposes assignment for any allocated decision band', () => {
+    render(
+      <WalletProvider>
+        <TransactionProvider>
+          <FacilityDetailPane
+            facility={{
+              ...mockFacility,
+              decision: 'IMMEDIATE_REVIEW',
+              assignment_status: 'NONE',
+              assigned_inspector: '0x0000000000000000000000000000000000000000',
+              offered_at: 0,
+              assignment_deadline: 0,
+            }}
+            incident={{ ...mockIncident, status: 'ALLOCATED' }}
+            contractOperator="0x1111111111111111111111111111111111111111"
+            onClose={() => {}}
+            onEvaluate={() => {}}
+            onOfferAssignment={() => {}}
+            onAcknowledgeAssignment={() => {}}
+            onReclaimAssignment={() => {}}
+          />
+        </TransactionProvider>
+      </WalletProvider>
+    );
+
+    expect(screen.getByRole('button', { name: 'Offer Assignment' })).not.toBeNull();
+    expect(screen.queryByText('0x0000000000000000000000000000000000000000')).toBeNull();
+  });
+
   it('HistorySection renders paginated audit log', () => {
     const mockHistory: HistoryEntry[] = [
       {
@@ -377,7 +406,7 @@ describe('UI Components, Role Gating, and Modal Validation', () => {
 
     fireEvent.click(screen.getByText('Create Incident'));
 
-    expect(screen.getByText('Event ID is required.')).not.toBeNull();
+    expect(screen.getByText('Event ID must be 1-128 characters.')).not.toBeNull();
     expect(screen.getByText('Event URL must begin with https://earthquake.usgs.gov/')).not.toBeNull();
     expect(screen.getByText('Digest must be a 64-character hexadecimal SHA-256 hash.')).not.toBeNull();
   });
@@ -397,7 +426,7 @@ describe('UI Components, Role Gating, and Modal Validation', () => {
     );
 
     fireEvent.click(screen.getByText('Register Facility'));
-    expect(screen.getByText('Facility identifier is required.')).not.toBeNull();
+    expect(screen.getByText('Facility identifier must be 1-128 characters.')).not.toBeNull();
     expect(screen.getByText('Evidence URL must be a valid HTTPS web resource.')).not.toBeNull();
     expect(screen.getByText('Digest must be a 64-character hexadecimal SHA-256 hash.')).not.toBeNull();
   });

@@ -45,17 +45,21 @@ export const CreateIncidentModal: React.FC<CreateIncidentModalProps> = ({
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (!eventId.trim()) {
-      newErrors.eventId = 'Event ID is required.';
+    if (!eventId.trim() || eventId.trim().length > 128) {
+      newErrors.eventId = 'Event ID must be 1-128 characters.';
     }
-    if (!eventUrl.trim() || !eventUrl.startsWith('https://earthquake.usgs.gov/')) {
+    if (
+      !eventUrl.trim() ||
+      eventUrl.trim().length > 512 ||
+      !eventUrl.startsWith('https://earthquake.usgs.gov/')
+    ) {
       newErrors.eventUrl = 'Event URL must begin with https://earthquake.usgs.gov/';
     }
     if (!/^[0-9a-fA-F]{64}$/.test(expectedDigest.trim())) {
       newErrors.expectedDigest = 'Digest must be a 64-character hexadecimal SHA-256 hash.';
     }
-    if (!regionLabel.trim()) {
-      newErrors.regionLabel = 'Region label is required.';
+    if (!regionLabel.trim() || regionLabel.trim().length > 128) {
+      newErrors.regionLabel = 'Region label must be 1-128 characters.';
     }
 
     const buckets = locationBucketsStr
@@ -64,6 +68,14 @@ export const CreateIncidentModal: React.FC<CreateIncidentModalProps> = ({
       .filter(Boolean);
     if (buckets.length === 0) {
       newErrors.locationBuckets = 'At least one location bucket is required.';
+    } else if (
+      buckets.length > 32 ||
+      new Set(buckets).size !== buckets.length ||
+      buckets.some((bucket) =>
+        bucket.length > 128 || /lat|lon|gps|coord|degree|°/i.test(bucket) || /-?\d+\.\d+/.test(bucket)
+      )
+    ) {
+      newErrors.locationBuckets = 'Use 1-32 unique coarse labels (max 128 chars; no coordinates).';
     }
 
     const occurredAtSeconds = Math.floor(new Date(eventOccurredAtStr).getTime() / 1000);
@@ -71,20 +83,20 @@ export const CreateIncidentModal: React.FC<CreateIncidentModalProps> = ({
       newErrors.eventOccurredAt = 'Valid occurrence timestamp is required.';
     }
 
-    if (slotCount < 1 || slotCount > 50) {
-      newErrors.slotCount = 'Slot count must be between 1 and 50.';
+    if (slotCount < 1 || slotCount > 24) {
+      newErrors.slotCount = 'Slot count must be between 1 and 24.';
     }
     if (timeoutSeconds < 60 || timeoutSeconds > 604800) {
       newErrors.timeoutSeconds = 'Timeout must be between 60s and 604800s (7 days).';
     }
-    if (maxAgeSeconds < 60) {
-      newErrors.maxAgeSeconds = 'Max event age must be at least 60 seconds.';
+    if (maxAgeSeconds < 1 || maxAgeSeconds > 31536000) {
+      newErrors.maxAgeSeconds = 'Max event age must be between 1 and 31536000 seconds.';
     }
     if (policyVersion < 1) {
       newErrors.policyVersion = 'Policy version must be a positive integer.';
     }
-    if (!policyText.trim()) {
-      newErrors.policyText = 'Policy text is required.';
+    if (!policyText.trim() || policyText.trim().length > 2000) {
+      newErrors.policyText = 'Policy text must be 1-2000 characters.';
     }
 
     setErrors(newErrors);
@@ -287,13 +299,13 @@ export const CreateIncidentModal: React.FC<CreateIncidentModalProps> = ({
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
             <div>
               <label htmlFor="slotCount" style={{ display: 'block', fontWeight: 600, fontSize: 'var(--font-size-xs)' }}>
-                Priority Queue Slots (1-50) *
+                Priority Queue Slots (1-24) *
               </label>
               <input
                 id="slotCount"
                 type="number"
                 min={1}
-                max={50}
+                max={24}
                 className="input"
                 value={slotCount}
                 onChange={(e) => setSlotCount(Number(e.target.value))}
@@ -312,6 +324,7 @@ export const CreateIncidentModal: React.FC<CreateIncidentModalProps> = ({
                 id="timeoutSeconds"
                 type="number"
                 min={60}
+                max={604800}
                 className="input"
                 value={timeoutSeconds}
                 onChange={(e) => setTimeoutSeconds(Number(e.target.value))}
@@ -328,7 +341,8 @@ export const CreateIncidentModal: React.FC<CreateIncidentModalProps> = ({
               <input
                 id="maxAgeSeconds"
                 type="number"
-                min={60}
+                min={1}
+                max={31536000}
                 className="input"
                 value={maxAgeSeconds}
                 onChange={(e) => setMaxAgeSeconds(Number(e.target.value))}

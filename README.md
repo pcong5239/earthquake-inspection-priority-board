@@ -73,7 +73,7 @@ npm run build
 npm audit --omit=dev
 ```
 
-Verified results: 77 Direct Mode tests passed; 54 frontend tests in 6 files passed; TypeScript typecheck and production build passed; production dependency audit found 0 vulnerabilities. Vite reports a non-blocking main-chunk size warning. The package intentionally has no lint script, so no lint result is claimed.
+Verified results: 80 Direct Mode tests passed; 55 frontend tests in 6 files passed; TypeScript typecheck and production build passed; production dependency audit found 0 vulnerabilities. Vite reports a non-blocking main-chunk size warning. The package intentionally has no lint script, so no lint result is claimed.
 
 ## Deployment
 

@@ -102,6 +102,24 @@ def test_offer_assignment_success(allocated_incident_board, direct_vm, operator_
     assert offer_event["details"]["queue_position"] == 1
 
 
+def test_offer_assignment_normalizes_frontend_string_address(
+    allocated_incident_board, direct_vm, operator_address, inspector_alice
+):
+    direct_vm.sender = operator_address
+    allocated_incident_board.offer_assignment(1, 1, inspector_alice.as_hex)
+    fac1 = json.loads(allocated_incident_board.get_facility(1, 1))
+    assert to_hex_addr(fac1["assigned_inspector"]) == to_hex_addr(inspector_alice)
+
+
+def test_offer_assignment_normalizes_studio_integer_address(
+    allocated_incident_board, direct_vm, operator_address, inspector_alice
+):
+    direct_vm.sender = operator_address
+    allocated_incident_board.offer_assignment(1, 1, int.from_bytes(inspector_alice.as_bytes, "big"))
+    fac1 = json.loads(allocated_incident_board.get_facility(1, 1))
+    assert to_hex_addr(fac1["assigned_inspector"]) == to_hex_addr(inspector_alice)
+
+
 def test_offer_assignment_unauthorized(allocated_incident_board, direct_vm, unauthorized_user, inspector_alice):
     """Test 14: Non-operator caller cannot offer assignment."""
     direct_vm.sender = unauthorized_user

@@ -60,15 +60,13 @@ export const FacilityDetailPane: React.FC<FacilityDetailPaneProps> = ({
   const canEvaluate =
     (incident.status === 'COHORT_LOCKED' || incident.status === 'EVALUATING') &&
     (facility.status === 'LOCKED' || facility.status === 'UNRESOLVED') &&
+    facility.evaluation_attempts < 2 &&
     walletState.isConnected && walletState.isStudionet;
 
   const canOffer =
     isOperator &&
-    facility.decision === 'PRIORITY_QUEUE' &&
     facility.queue_position > 0 &&
-    (facility.assignment_status === 'NONE' ||
-      facility.assignment_status === 'EXPIRED' ||
-      isOfferExpired);
+    facility.assignment_status === 'NONE';
 
   const canAcknowledge = isAssignedInspector && isOfferActive;
 
@@ -292,7 +290,7 @@ export const FacilityDetailPane: React.FC<FacilityDetailPaneProps> = ({
             <span className={`badge ${assignmentInfo.badgeClass}`}>{assignmentInfo.label}</span>
           </div>
 
-          {facility.assigned_inspector && (
+          {facility.assigned_inspector !== '0x0000000000000000000000000000000000000000' && (
             <div style={{ marginBottom: '0.375rem' }}>
               <span style={{ color: 'var(--ink-muted)' }}>Assigned Inspector: </span>
               <a
@@ -348,7 +346,7 @@ export const FacilityDetailPane: React.FC<FacilityDetailPaneProps> = ({
             )}
 
           {/* Offer Assignment (Operator Only) */}
-          {facility.decision === 'PRIORITY_QUEUE' && (
+          {facility.queue_position > 0 && facility.assignment_status === 'NONE' && (
             <button
               type="button"
               className="btn btn-primary"

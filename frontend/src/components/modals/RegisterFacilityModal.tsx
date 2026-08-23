@@ -41,13 +41,13 @@ export const RegisterFacilityModal: React.FC<RegisterFacilityModalProps> = ({
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (!facilityId.trim()) {
-      newErrors.facilityId = 'Facility identifier is required.';
+    if (!facilityId.trim() || facilityId.trim().length > 128) {
+      newErrors.facilityId = 'Facility identifier must be 1-128 characters.';
     }
     if (!locationBucket.trim()) {
       newErrors.locationBucket = 'Location bucket is required.';
     }
-    if (!evidenceUrl.trim() || !evidenceUrl.startsWith('https://')) {
+    if (!evidenceUrl.trim() || evidenceUrl.trim().length > 512 || !evidenceUrl.startsWith('https://')) {
       newErrors.evidenceUrl = 'Evidence URL must be a valid HTTPS web resource.';
     }
     if (!/^[0-9a-fA-F]{64}$/.test(expectedEvidenceDigest.trim())) {
