@@ -745,6 +745,20 @@ class EarthquakeInspectionPriorityBoard(gl.Contract):
     # -------------------------------------------------------------------------
 
     @gl.public.write
+    def transfer_operator(self, new_operator: Address) -> None:
+        if gl.message.sender_address != self.operator:
+            raise UserError("unauthorized: caller is not operator")
+
+        zero_address = Address(b"\x00" * 20)
+        if new_operator == zero_address:
+            raise UserError("invalid operator: zero address forbidden")
+        if new_operator == self.operator:
+            raise UserError("invalid operator: new operator must differ")
+
+        self.operator = new_operator
+        self.version = u32(2)
+
+    @gl.public.write
     def create_incident(
         self,
         event_id: str,

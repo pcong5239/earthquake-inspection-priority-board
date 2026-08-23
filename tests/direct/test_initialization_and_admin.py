@@ -54,8 +54,46 @@ def test_upgradability_empty_code_rejected(deployed_board, direct_vm, operator_a
         deployed_board.upgrade(b"")
 
 
+def test_operator_transfer_authorized_and_old_operator_loses_authority(
+    deployed_board, direct_vm, operator_address, unauthorized_user, valid_incident_params
+):
+    args = [
+        valid_incident_params[key]
+        for key in (
+            "event_id", "event_url", "expected_event_digest", "region_label",
+            "allowed_location_buckets_json", "event_occurred_at",
+            "max_event_age_seconds", "slot_count", "assignment_timeout_seconds",
+            "policy_text", "policy_version",
+        )
+    ]
+    direct_vm.sender = operator_address
+    deployed_board.transfer_operator(unauthorized_user)
+    assert to_hex_addr(deployed_board.get_operator()) == to_hex_addr(unauthorized_user)
+    assert deployed_board.get_version() == 2
+
+    with direct_vm.expect_revert("unauthorized: caller is not operator"):
+        deployed_board.create_incident(*args)
+
+    direct_vm.sender = unauthorized_user
+    assert deployed_board.create_incident(*args) == 1
+
+
+def test_operator_transfer_rejects_unauthorized_zero_and_same(
+    deployed_board, direct_vm, operator_address, unauthorized_user
+):
+    direct_vm.sender = unauthorized_user
+    with direct_vm.expect_revert("unauthorized: caller is not operator"):
+        deployed_board.transfer_operator(unauthorized_user)
+
+    direct_vm.sender = operator_address
+    with direct_vm.expect_revert("invalid operator: zero address forbidden"):
+        deployed_board.transfer_operator(type(unauthorized_user)(b"\x00" * 20))
+    with direct_vm.expect_revert("invalid operator: new operator must differ"):
+        deployed_board.transfer_operator(type(unauthorized_user)(operator_address))
+
+
 def test_ast_source_structure_and_decorators():
-    """Correction 2: AST regression verifying exactly one contract class, exactly one decorator per method, 10 writes, 14 views."""
+    """AST regression verifies one contract class/decorator and the exact public surface."""
     source = Path(CONTRACT_PATH).read_text(encoding="utf-8")
     tree = ast.parse(source)
 
@@ -103,6 +141,7 @@ def test_ast_source_structure_and_decorators():
                     assert False, f"Method {item.name} arg {arg.arg} has float type which is forbidden"
 
     expected_writes = [
+        "transfer_operator",
         "create_incident",
         "register_facility",
         "lock_cohort",
@@ -135,11 +174,11 @@ def test_ast_source_structure_and_decorators():
     assert sorted(public_writes) == sorted(expected_writes), (
         f"Public writes mismatch. Got {public_writes}, expected {expected_writes}"
     )
-    assert len(public_writes) == 10
+    assert len(public_writes) == 11
 
     assert sorted(public_views) == sorted(expected_views), (
         f"Public views mismatch. Got {public_views}, expected {expected_views}"
     )
     assert len(public_views) == 14
 
-    assert len(public_writes) + len(public_views) == 24
+    assert len(public_writes) + len(public_views) == 25

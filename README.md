@@ -40,7 +40,7 @@ USGS and facility pages are untrusted evidence inputs. Contract storage is the s
 
 Actors are the deployer/operator, assigned inspectors, public keeper callers, and the Root Slot upgrader. Incidents transition `DRAFT → COHORT_LOCKED → EVALUATING → ALLOCATED → CLOSED`. Facilities transition from registration and lock through a decided or fail-closed unresolved result. Assignment state is `NONE`, `OFFERED`, `ACKNOWLEDGED`, or `EXPIRED`.
 
-The contract exposes 14 views and 10 writes. Its validator path requires exact consequential-field agreement, exact observed digests, and permits bounded score variation only inside the same decision band. Score bands are 80–100 immediate review, 55–79 priority queue, 25–54 monitor, and 0–24 out of scope.
+The v2 contract exposes 14 views and 11 writes. The current operator may transfer the role to a non-zero independent address, atomically activating v2 and allowing a public judge wallet to exercise the operator journey without importing or possessing the Studio deployer/upgrader identity. Its validator path requires exact consequential-field agreement, exact observed digests, and permits bounded score variation only inside the same decision band. Score bands are 80–100 immediate review, 55–79 priority queue, 25–54 monitor, and 0–24 out of scope.
 
 ## Transaction lifecycle
 
