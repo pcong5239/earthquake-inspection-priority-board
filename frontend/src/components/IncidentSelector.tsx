@@ -49,6 +49,13 @@ export const IncidentSelector: React.FC<IncidentSelectorProps> = ({
   // Compute operational metrics from verified reads
   const evaluatedCount = facilities.filter((f) => f.status === 'DECIDED').length;
   const unresolvedCount = facilities.filter((f) => f.status === 'UNRESOLVED').length;
+  const allFacilitiesTerminal =
+    facilities.length > 0 &&
+    facilities.every(
+      (facility) =>
+        facility.status === 'DECIDED' ||
+        (facility.status === 'UNRESOLVED' && facility.evaluation_attempts >= 2)
+    );
 
   return (
     <section
@@ -255,10 +262,12 @@ export const IncidentSelector: React.FC<IncidentSelectorProps> = ({
                 type="button"
                 className="btn btn-primary"
                 onClick={onFinalizeAllocation}
-                disabled={!walletState.isConnected || !walletState.isStudionet}
+                disabled={!walletState.isConnected || !walletState.isStudionet || !allFacilitiesTerminal}
                 title={
                   !walletState.isConnected || !walletState.isStudionet
                     ? 'Connect a wallet on Studionet to finalize allocation'
+                    : !allFacilitiesTerminal
+                    ? 'Evaluate every facility to a decision or exhaust both retry attempts first'
                     : 'Finalize queue and waitlist allocations for all evaluated facilities'
                 }
               >
@@ -266,7 +275,7 @@ export const IncidentSelector: React.FC<IncidentSelectorProps> = ({
               </button>
             )}
 
-            {selectedIncident.status !== 'CLOSED' && (
+            {selectedIncident.status === 'ALLOCATED' && (
               <button
                 type="button"
                 className="btn btn-danger"

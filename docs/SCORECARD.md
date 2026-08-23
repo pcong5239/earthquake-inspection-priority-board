@@ -24,7 +24,7 @@ Weakness: queue/waitlist assignment lifecycle is exhaustively covered in Direct 
 
 ## Engineering: 4/5
 
-Evidence: isolated pinned project, public reproducible repository, strict runtime guards, serialized transient-retrying RPC reads, fail-closed metadata availability, live-shape transaction finality/execution/readback reconciliation, 75 contract tests, 54 frontend tests, passing typecheck/build, zero production dependency vulnerabilities, and deployment from the exact Git commit.
+Evidence: isolated pinned project, public reproducible repository, strict runtime guards, serialized transient-retrying RPC reads, fail-closed metadata availability, live-shape transaction finality/execution/readback reconciliation, 80 contract tests, 56 frontend tests, passing typecheck/build, zero production dependency vulnerabilities, and deployment from the exact Git commit.
 
 Inspected evidence: public Git tree; Git/Vercel deployment logs; test and build output; `requirements-dev.txt`; `package-lock.json`; `vercel.json`; `docs/VERIFICATION.md`.
 

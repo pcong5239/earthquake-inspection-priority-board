@@ -577,15 +577,15 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
               <span style={{ fontSize: 'var(--text-2xs)', color: 'var(--ink-secondary)' }}>Immediate Review</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-              <span className="badge badge-priority">60-79</span>
+              <span className="badge badge-priority">55-79</span>
               <span style={{ fontSize: 'var(--text-2xs)', color: 'var(--ink-secondary)' }}>Priority Queue</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-              <span className="badge badge-monitor">40-59</span>
+              <span className="badge badge-monitor">25-54</span>
               <span style={{ fontSize: 'var(--text-2xs)', color: 'var(--ink-secondary)' }}>Monitor</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-              <span className="badge badge-outofscope">0-39</span>
+              <span className="badge badge-outofscope">0-24</span>
               <span style={{ fontSize: 'var(--text-2xs)', color: 'var(--ink-secondary)' }}>Out of Scope</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>

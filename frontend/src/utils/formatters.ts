@@ -46,19 +46,19 @@ export function formatDecisionBand(decision: DecisionBand): {
       return {
         label: 'Priority Queue',
         badgeClass: 'badge-priority',
-        description: 'Score 60-79: High priority queue for dispatch allocation.',
+        description: 'Score 55-79: High priority queue for dispatch allocation.',
       };
     case 'MONITOR':
       return {
         label: 'Monitor',
         badgeClass: 'badge-monitor',
-        description: 'Score 40-59: Secondary assessment waitlist under observation.',
+        description: 'Score 25-54: Secondary assessment waitlist under observation.',
       };
     case 'OUT_OF_SCOPE':
       return {
         label: 'Out of Scope',
         badgeClass: 'badge-outofscope',
-        description: 'Score 0-39: Below immediate triage threshold or non-qualifying.',
+        description: 'Score 0-24: Below immediate triage threshold or non-qualifying.',
       };
     case 'UNRESOLVED':
       return {

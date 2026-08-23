@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { App } from '../App';
 import { SpatialQueueBoard } from '../components/SpatialQueueBoard';
 import { FacilityDetailPane } from '../components/FacilityDetailPane';
+import { IncidentSelector } from '../components/IncidentSelector';
 import { HistorySection } from '../components/HistorySection';
 import { CreateIncidentModal } from '../components/modals/CreateIncidentModal';
 import { RegisterFacilityModal } from '../components/modals/RegisterFacilityModal';
@@ -45,7 +46,7 @@ describe('UI Components, Role Gating, and Modal Validation', () => {
       max_facilities_per_incident: 100,
       max_history_per_incident: 100,
       max_facility_retries: 3,
-      max_url_length: 256,
+      max_url_length: 512,
       max_policy_length: 2048,
       max_reason_length: 512,
       max_string_id_length: 64,
@@ -293,12 +294,50 @@ describe('UI Components, Role Gating, and Modal Validation', () => {
     expect(screen.getByText('Spatial Queue Diagram & Regional Buckets')).not.toBeNull();
     expect(screen.getByText('Location: Sector-A')).not.toBeNull();
     expect(screen.getByText('Location: Sector-B')).not.toBeNull();
+    expect(screen.getByText('55-79')).not.toBeNull();
+    expect(screen.getByText('25-54')).not.toBeNull();
+    expect(screen.getByText('0-24')).not.toBeNull();
 
     // Toggle to Accessible List View
     fireEvent.click(screen.getByText('Accessible List'));
     expect(screen.getByLabelText('Ordered Triage & Queue List')).not.toBeNull();
     expect(screen.getByText(/Allocated Inspection Priority Queue/)).not.toBeNull();
     expect(screen.getByText(/Position #1:/)).not.toBeNull();
+  });
+
+  it('IncidentSelector exposes only contract-valid lifecycle actions', () => {
+    const props = {
+      activeIncidents: [1],
+      selectedIncidentId: 1,
+      selectedIncident: { ...mockIncident, status: 'DRAFT' as const },
+      facilities: [] as FacilityRecord[],
+      queueCount: 0,
+      waitlistCount: 0,
+      isLoading: false,
+      contractOperator: '0x1111111111111111111111111111111111111111',
+      onSelectIncident: () => {},
+      onRegisterFacility: () => {},
+      onLockCohort: () => {},
+      onFinalizeAllocation: () => {},
+      onCloseIncident: () => {},
+    };
+
+    const { rerender } = render(
+      <WalletProvider>
+        <IncidentSelector {...props} />
+      </WalletProvider>
+    );
+    expect(screen.queryByRole('button', { name: 'Close Incident' })).toBeNull();
+
+    rerender(
+      <WalletProvider>
+        <IncidentSelector
+          {...props}
+          selectedIncident={{ ...mockIncident, status: 'ALLOCATED' }}
+        />
+      </WalletProvider>
+    );
+    expect(screen.getByRole('button', { name: 'Close Incident' })).not.toBeNull();
   });
 
   it('FacilityDetailPane displays full consensus findings, evidence digest, and inspector state', () => {
