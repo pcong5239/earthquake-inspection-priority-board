@@ -39,20 +39,20 @@ export const TransactionTray: React.FC = () => {
       role="region"
       style={{
         position: 'fixed',
-        bottom: '1rem',
-        right: '1rem',
-        left: '1rem',
-        maxWidth: '44rem',
+        bottom: '1.25rem',
+        right: '1.25rem',
+        left: '1.25rem',
+        maxWidth: '46rem',
         margin: '0 auto',
-        backgroundColor: 'var(--color-bg-canvas)',
+        backgroundColor: '#ffffff',
         border: isTerminalError
-          ? '2px solid var(--color-error)'
+          ? '2px solid var(--status-error)'
           : isSuccess
-          ? '2px solid var(--color-verified)'
-          : '2px solid var(--color-hazard)',
+          ? '2px solid var(--status-success)'
+          : '2px solid var(--accent-seismic)',
         borderRadius: 'var(--radius-md)',
         boxShadow: 'var(--shadow-tray)',
-        padding: '1rem',
+        padding: '1rem 1.25rem',
         zIndex: 1000,
       }}
     >
@@ -62,24 +62,24 @@ export const TransactionTray: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: '0.5rem',
+          marginBottom: '0.75rem',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
           <span
             style={{
               display: 'inline-block',
-              width: '0.75rem',
-              height: '0.75rem',
+              width: '10px',
+              height: '10px',
               borderRadius: '50%',
               backgroundColor: isTerminalError
-                ? 'var(--color-error)'
+                ? 'var(--status-error)'
                 : isSuccess
-                ? 'var(--color-verified)'
-                : 'var(--color-hazard)',
+                ? 'var(--status-success)'
+                : 'var(--accent-seismic)',
             }}
           />
-          <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, margin: 0 }}>
+          <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 800, color: 'var(--ink-primary)', margin: 0 }}>
             {txState.title || 'Transaction in Progress'}
           </h4>
         </div>
@@ -87,8 +87,7 @@ export const TransactionTray: React.FC = () => {
         {(isTerminalError || isSuccess) && (
           <button
             type="button"
-            className="btn btn-secondary"
-            style={{ padding: '0.125rem 0.375rem', fontSize: 'var(--font-size-xs)' }}
+            className="btn btn-secondary btn-sm"
             onClick={dismissTransaction}
             aria-label="Dismiss transaction notification"
           >
@@ -97,7 +96,7 @@ export const TransactionTray: React.FC = () => {
         )}
       </div>
 
-      {/* Phase Track */}
+      {/* Step-Based Phase Track */}
       {!isTerminalError && (
         <div
           style={{
@@ -105,8 +104,8 @@ export const TransactionTray: React.FC = () => {
             alignItems: 'center',
             gap: '0.25rem',
             overflowX: 'auto',
-            paddingBottom: '0.25rem',
-            marginBottom: '0.5rem',
+            paddingBottom: '0.375rem',
+            marginBottom: '0.625rem',
           }}
         >
           {PHASES_FLOW.map((p, idx) => {
@@ -118,20 +117,25 @@ export const TransactionTray: React.FC = () => {
                 key={p.key}
                 style={{
                   fontSize: '0.6875rem',
-                  padding: '0.125rem 0.375rem',
+                  padding: '0.2rem 0.4375rem',
                   borderRadius: 'var(--radius-xs)',
                   whiteSpace: 'nowrap',
                   backgroundColor: isCurrent
-                    ? 'var(--color-hazard)'
+                    ? 'var(--accent-seismic)'
                     : isCompleted
-                    ? 'var(--color-band-priority-bg)'
-                    : 'var(--color-bg-canvas-subtle)',
+                    ? 'var(--accent-teal-subtle)'
+                    : 'var(--canvas-subtle)',
                   color: isCurrent
-                    ? 'var(--color-ink-inverse)'
+                    ? '#ffffff'
                     : isCompleted
-                    ? 'var(--color-verified)'
-                    : 'var(--color-ink-muted)',
-                  fontWeight: isCurrent || isCompleted ? 700 : 400,
+                    ? 'var(--accent-teal)'
+                    : 'var(--ink-muted)',
+                  border: isCurrent
+                    ? '1px solid var(--accent-seismic)'
+                    : isCompleted
+                    ? '1px solid var(--accent-teal-border)'
+                    : '1px solid var(--border-hairline)',
+                  fontWeight: isCurrent || isCompleted ? 700 : 500,
                 }}
               >
                 {p.label}
@@ -141,31 +145,35 @@ export const TransactionTray: React.FC = () => {
         </div>
       )}
 
-      {/* Hash & Explorer Link */}
+      {/* Tx Hash & Explorer Link */}
       {txState.hash && (
-        <div style={{ fontSize: 'var(--font-size-xs)', marginBottom: '0.25rem' }}>
-          <span style={{ color: 'var(--color-ink-muted)' }}>Tx Hash: </span>
+        <div style={{ fontSize: 'var(--text-xs)', marginBottom: '0.375rem' }}>
+          <span style={{ color: 'var(--ink-muted)' }}>Transaction: </span>
           <a
             href={getExplorerTxUrl(txState.hash)}
             target="_blank"
             rel="noreferrer"
             className="mono"
-            style={{ color: 'var(--color-verified)', textDecoration: 'underline' }}
+            style={{ color: 'var(--accent-teal)', fontWeight: 600, textDecoration: 'underline' }}
           >
-            {formatAddress(txState.hash, 8)} ↗ (Explorer)
+            {formatAddress(txState.hash, 8)} ↗ (Studionet Explorer)
           </a>
         </div>
       )}
 
-      {/* Message / Error Details */}
+      {/* Error or Progress Detail */}
       {txState.error ? (
         <div
           role="alert"
           style={{
-            fontSize: 'var(--font-size-xs)',
-            color: 'var(--color-error)',
+            fontSize: 'var(--text-xs)',
+            color: 'var(--status-error)',
             fontWeight: 600,
-            lineHeight: 1.4,
+            lineHeight: 1.45,
+            backgroundColor: 'var(--status-error-bg)',
+            padding: '0.5rem 0.75rem',
+            borderRadius: 'var(--radius-xs)',
+            border: '1px solid var(--status-error-border)',
           }}
         >
           {txState.error}
@@ -173,9 +181,9 @@ export const TransactionTray: React.FC = () => {
       ) : (
         <div
           style={{
-            fontSize: 'var(--font-size-xs)',
-            color: 'var(--color-ink-secondary)',
-            lineHeight: 1.4,
+            fontSize: 'var(--text-xs)',
+            color: 'var(--ink-secondary)',
+            lineHeight: 1.45,
           }}
         >
           {txState.details}

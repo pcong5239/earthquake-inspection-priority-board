@@ -80,7 +80,7 @@ export const WalletModal: React.FC = () => {
         aria-modal="true"
         aria-labelledby="wallet-dialog-title"
         className="modal-dialog"
-        style={{ maxWidth: '26rem' }}
+        style={{ maxWidth: '28rem', border: '1px solid var(--border-strong)' }}
       >
         {/* Dialog Header */}
         <div
@@ -89,17 +89,34 @@ export const WalletModal: React.FC = () => {
             alignItems: 'center',
             justifyContent: 'space-between',
             marginBottom: '1rem',
-            borderBottom: '1px solid var(--color-border-subtle)',
+            borderBottom: '1px solid var(--border-subtle)',
             paddingBottom: '0.75rem',
           }}
         >
-          <h3 id="wallet-dialog-title" style={{ fontSize: 'var(--font-size-base)', fontWeight: 700, margin: 0 }}>
-            Connect Injected Wallet
-          </h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span
+              style={{
+                width: '1.25rem',
+                height: '1.25rem',
+                backgroundColor: 'var(--accent-teal)',
+                color: '#ffffff',
+                borderRadius: 'var(--radius-xs)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 800,
+                fontSize: '0.6875rem',
+              }}
+            >
+              ⬡
+            </span>
+            <h3 id="wallet-dialog-title" style={{ fontSize: 'var(--text-base)', fontWeight: 800, color: 'var(--ink-primary)', margin: 0 }}>
+              Connect Injected Wallet
+            </h3>
+          </div>
           <button
             type="button"
-            className="btn btn-secondary"
-            style={{ padding: '0.25rem 0.5rem', fontSize: 'var(--font-size-xs)' }}
+            className="btn btn-secondary btn-sm"
             onClick={closeChooser}
             disabled={isConnecting}
             aria-label="Close wallet connection dialog"
@@ -108,7 +125,7 @@ export const WalletModal: React.FC = () => {
           </button>
         </div>
 
-        <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-ink-muted)', marginBottom: '1rem' }}>
+        <p style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)', marginBottom: '1rem', lineHeight: 1.45 }}>
           Select an injected EIP-6963 provider. Zero RPC requests are dispatched until you choose an option.
         </p>
 
@@ -117,13 +134,14 @@ export const WalletModal: React.FC = () => {
           <div
             role="alert"
             style={{
-              padding: '0.5rem',
-              backgroundColor: 'var(--color-band-immediate-bg)',
-              color: 'var(--color-error)',
-              border: '1px solid var(--color-error)',
+              padding: '0.625rem 0.75rem',
+              backgroundColor: 'var(--status-error-bg)',
+              color: 'var(--status-error)',
+              border: '1px solid var(--status-error-border)',
               borderRadius: 'var(--radius-xs)',
-              fontSize: 'var(--font-size-xs)',
+              fontSize: 'var(--text-xs)',
               marginBottom: '1rem',
+              lineHeight: 1.45,
             }}
           >
             {connectError}
@@ -136,13 +154,15 @@ export const WalletModal: React.FC = () => {
             style={{
               padding: '1.5rem',
               textAlign: 'center',
-              backgroundColor: 'var(--color-bg-canvas-subtle)',
+              backgroundColor: 'var(--canvas-subtle)',
+              border: '1px dashed var(--border-subtle)',
               borderRadius: 'var(--radius-xs)',
-              fontSize: 'var(--font-size-xs)',
-              color: 'var(--color-ink-muted)',
+              fontSize: 'var(--text-xs)',
+              color: 'var(--ink-muted)',
+              lineHeight: 1.5,
             }}
           >
-            No supported injected wallets (MetaMask, OKX, Rabby) detected via EIP-6963 in your browser.
+            No supported injected wallets (MetaMask, OKX, Rabby) detected via EIP-6963 in this browser window.
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -158,9 +178,10 @@ export const WalletModal: React.FC = () => {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   padding: '0.75rem 1rem',
-                  fontSize: 'var(--font-size-sm)',
-                  fontWeight: 600,
+                  fontSize: 'var(--text-sm)',
+                  fontWeight: 700,
                   width: '100%',
+                  textAlign: 'left',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -176,22 +197,25 @@ export const WalletModal: React.FC = () => {
                         width: '1.5rem',
                         height: '1.5rem',
                         borderRadius: 'var(--radius-xs)',
-                        backgroundColor: 'var(--color-hazard)',
-                        color: 'var(--color-ink-inverse)',
+                        backgroundColor: 'var(--accent-seismic)',
+                        color: '#ffffff',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         fontSize: '0.75rem',
-                        fontWeight: 900,
+                        fontWeight: 800,
                       }}
                     >
                       W
                     </span>
                   )}
-                  <span>{wallet.name}</span>
+                  <span style={{ color: 'var(--ink-primary)' }}>{wallet.name}</span>
                 </div>
 
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-ink-muted)' }}>
+                <span
+                  className="badge badge-slate"
+                  style={{ fontSize: '0.625rem', padding: '0.125rem 0.375rem' }}
+                >
                   {wallet.brand.toUpperCase()} ↗
                 </span>
               </button>
@@ -204,12 +228,12 @@ export const WalletModal: React.FC = () => {
             style={{
               marginTop: '1rem',
               textAlign: 'center',
-              fontSize: 'var(--font-size-xs)',
-              color: 'var(--color-verified)',
-              fontWeight: 600,
+              fontSize: 'var(--text-xs)',
+              color: 'var(--accent-teal)',
+              fontWeight: 700,
             }}
           >
-            Requesting authorization in wallet...
+            Awaiting wallet approval & chain verification...
           </div>
         )}
       </div>

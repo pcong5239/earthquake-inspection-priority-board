@@ -20,99 +20,104 @@ export const Footer: React.FC<FooterProps> = ({ contractInfo, contractCaps }) =>
   return (
     <footer
       style={{
-        marginTop: '2rem',
-        borderTop: '1px solid var(--color-border-default)',
-        backgroundColor: 'var(--color-bg-canvas-subtle)',
-        padding: '1.5rem 1rem',
-        fontSize: 'var(--font-size-xs)',
-        color: 'var(--color-ink-muted)',
+        marginTop: '3rem',
+        borderTop: '1px solid var(--border-subtle)',
+        backgroundColor: '#ffffff',
+        padding: '2rem 1.25rem 1.5rem',
+        fontSize: 'var(--text-xs)',
+        color: 'var(--ink-secondary)',
       }}
     >
       <div
         style={{
-          maxWidth: '80rem',
+          maxWidth: '86rem',
           margin: '0 auto',
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(18rem, 1fr))',
-          gap: '1.5rem',
+          gap: '2rem',
         }}
       >
-        {/* Network & RPC */}
+        {/* Protocol Network & RPC */}
         <div>
-          <div style={{ fontWeight: 700, color: 'var(--color-ink-primary)', marginBottom: '0.375rem' }}>
+          <div style={{ fontWeight: 800, color: 'var(--ink-primary)', fontSize: 'var(--text-xs)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.5rem' }}>
             GenLayer Studionet Protocol
           </div>
-          <div>Chain ID: {STUDIONET_CHAIN_ID} (0xf22f)</div>
-          <div>
-            RPC Endpoint:{' '}
-            <a
-              href={STUDIONET_RPC_URL}
-              target="_blank"
-              rel="noreferrer"
-              style={{ color: 'var(--color-verified)', textDecoration: 'underline' }}
-            >
-              {STUDIONET_RPC_URL}
-            </a>
-          </div>
-          <div>
-            Explorer:{' '}
-            <a
-              href={STUDIONET_EXPLORER_BASE}
-              target="_blank"
-              rel="noreferrer"
-              style={{ color: 'var(--color-verified)', textDecoration: 'underline' }}
-            >
-              {STUDIONET_EXPLORER_BASE}
-            </a>
+          <div style={{ lineHeight: 1.6 }}>
+            <div><strong>Chain ID:</strong> {STUDIONET_CHAIN_ID} (0xf22f)</div>
+            <div>
+              <strong>RPC:</strong>{' '}
+              <a
+                href={STUDIONET_RPC_URL}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: 'var(--accent-teal)', textDecoration: 'underline' }}
+              >
+                {STUDIONET_RPC_URL}
+              </a>
+            </div>
+            <div>
+              <strong>Explorer:</strong>{' '}
+              <a
+                href={STUDIONET_EXPLORER_BASE}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: 'var(--accent-teal)', textDecoration: 'underline' }}
+              >
+                {STUDIONET_EXPLORER_BASE} ↗
+              </a>
+            </div>
           </div>
         </div>
 
-        {/* Contract State */}
+        {/* Intelligent Contract Metadata */}
         <div>
-          <div style={{ fontWeight: 700, color: 'var(--color-ink-primary)', marginBottom: '0.375rem' }}>
-            Intelligent Contract Metadata
+          <div style={{ fontWeight: 800, color: 'var(--ink-primary)', fontSize: 'var(--text-xs)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.5rem' }}>
+            Intelligent Contract State
           </div>
           {contractAddress ? (
-            <>
+            <div style={{ lineHeight: 1.6 }}>
               <div>
-                Address:{' '}
+                <strong>Address:</strong>{' '}
                 <a
                   href={getExplorerAddressUrl(contractAddress)}
                   target="_blank"
                   rel="noreferrer"
                   className="mono"
-                  style={{ color: 'var(--color-verified)', textDecoration: 'underline' }}
+                  style={{ color: 'var(--accent-teal)', textDecoration: 'underline' }}
                 >
-                  {contractAddress}
+                  {contractAddress} ↗
                 </a>
               </div>
-              {contractInfo && (
+              {contractInfo ? (
                 <>
-                  <div>Operator: {formatAddress(contractInfo.operator)}</div>
+                  <div><strong>Operator:</strong> {formatAddress(contractInfo.operator)}</div>
                   <div>
-                    Version: v{contractInfo.version} • Incidents Created: {contractInfo.incident_count}
+                    <strong>Version:</strong> v{contractInfo.version} • <strong>Incidents:</strong> {contractInfo.incident_count}
                   </div>
                 </>
+              ) : (
+                <div style={{ color: 'var(--ink-muted)' }}>Contract identity unverified or loading.</div>
               )}
-            </>
+            </div>
           ) : (
-            <div>Contract address not configured in environment (VITE_CONTRACT_ADDRESS).</div>
+            <div style={{ color: 'var(--ink-muted)' }}>Contract address not configured in environment.</div>
           )}
         </div>
 
-        {/* Contract Caps */}
+        {/* Governance Caps & Constraints */}
         {contractCaps && (
           <div>
-            <div style={{ fontWeight: 700, color: 'var(--color-ink-primary)', marginBottom: '0.375rem' }}>
+            <div style={{ fontWeight: 800, color: 'var(--ink-primary)', fontSize: 'var(--text-xs)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.5rem' }}>
               Governance Caps & Boundaries
             </div>
-            <div>Max Incidents: {contractCaps.max_incidents}</div>
-            <div>Max Facilities / Incident: {contractCaps.max_facilities_per_incident}</div>
-            <div>Max History / Incident: {contractCaps.max_history_per_incident}</div>
-            <div>Max Retries: {contractCaps.max_facility_retries}</div>
-            <div>
-              Assignment Timeout: {contractCaps.min_assignment_timeout_seconds}s –{' '}
-              {contractCaps.max_assignment_timeout_seconds}s
+            <div style={{ lineHeight: 1.6 }}>
+              <div><strong>Max Incidents:</strong> {contractCaps.max_incidents}</div>
+              <div><strong>Max Facilities / Incident:</strong> {contractCaps.max_facilities_per_incident}</div>
+              <div><strong>Max Retries:</strong> {contractCaps.max_facility_retries}</div>
+              <div>
+                <strong>Assignment Timeout:</strong> {contractCaps.min_assignment_timeout_seconds}s –{' '}
+                {contractCaps.max_assignment_timeout_seconds}s
+              </div>
             </div>
           </div>
         )}
@@ -120,15 +125,25 @@ export const Footer: React.FC<FooterProps> = ({ contractInfo, contractCaps }) =>
 
       <div
         style={{
-          maxWidth: '80rem',
-          margin: '1.5rem auto 0',
+          maxWidth: '86rem',
+          margin: '2rem auto 0',
           paddingTop: '1rem',
-          borderTop: '1px solid var(--color-border-subtle)',
-          textAlign: 'center',
-          fontSize: '0.6875rem',
+          borderTop: '1px solid var(--border-hairline)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '0.5rem',
+          fontSize: 'var(--text-2xs)',
+          color: 'var(--ink-muted)',
         }}
       >
-        Autonomous Emergency Coordination Demo • genlayer-js@1.1.8 • React 19 • Studionet Native
+        <div>
+          Autonomous Emergency Coordination Demo • genlayer-js@1.1.8 • React 19 • Studionet Native
+        </div>
+        <div>
+          Decentralized AI Consensus Execution
+        </div>
       </div>
     </footer>
   );

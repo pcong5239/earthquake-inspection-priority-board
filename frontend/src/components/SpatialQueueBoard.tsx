@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import type { FacilityRecord, IncidentRecord, QueueItem, WaitlistItem } from '../types/contract';
-import { formatDecisionBand, formatEvidenceStatus, formatAssignmentStatus, formatAddress } from '../utils/formatters';
+import {
+  formatDecisionBand,
+  formatEvidenceStatus,
+  formatAssignmentStatus,
+  formatFacilityStatus,
+  formatAddress,
+} from '../utils/formatters';
 
 interface SpatialQueueBoardProps {
   incident: IncidentRecord;
@@ -37,35 +43,34 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
     <section
       aria-label="Spatial Queue and Region Diagram"
       className="panel"
-      style={{ marginBottom: '1rem' }}
+      style={{ marginBottom: '1.25rem', overflow: 'hidden' }}
     >
-      {/* View Switcher & Title */}
+      {/* Header & View Switcher */}
       <div
         style={{
+          padding: '1rem',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
           gap: '0.75rem',
-          marginBottom: '1rem',
-          borderBottom: '1px solid var(--color-border-subtle)',
-          paddingBottom: '0.75rem',
+          borderBottom: '1px solid var(--border-subtle)',
+          backgroundColor: '#ffffff',
         }}
       >
         <div>
-          <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 700 }}>
+          <h2 style={{ fontSize: 'var(--text-base)', fontWeight: 800, color: 'var(--ink-primary)', letterSpacing: '-0.01em' }}>
             Spatial Queue Diagram & Regional Buckets
           </h2>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-ink-muted)' }}>
+          <p style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)', marginTop: '0.125rem' }}>
             Coarse region cohort distribution, consensus evaluation scores, and priority queue slots.
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.25rem' }}>
+        <div style={{ display: 'flex', gap: '0.375rem' }}>
           <button
             type="button"
-            className={`btn ${viewMode === 'diagram' ? 'btn-primary' : 'btn-secondary'}`}
-            style={{ fontSize: 'var(--font-size-xs)', padding: '0.25rem 0.5rem' }}
+            className={`btn btn-sm ${viewMode === 'diagram' ? 'btn-primary' : 'btn-secondary'}`}
             onClick={() => setViewMode('diagram')}
             aria-pressed={viewMode === 'diagram'}
           >
@@ -73,8 +78,7 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
           </button>
           <button
             type="button"
-            className={`btn ${viewMode === 'accessible-list' ? 'btn-primary' : 'btn-secondary'}`}
-            style={{ fontSize: 'var(--font-size-xs)', padding: '0.25rem 0.5rem' }}
+            className={`btn btn-sm ${viewMode === 'accessible-list' ? 'btn-primary' : 'btn-secondary'}`}
             onClick={() => setViewMode('accessible-list')}
             aria-pressed={viewMode === 'accessible-list'}
           >
@@ -85,16 +89,16 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
 
       {viewMode === 'accessible-list' ? (
         /* Accessible Ordered List Equivalent */
-        <div aria-label="Ordered Triage & Queue List">
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, marginBottom: '0.5rem' }}>
+        <div aria-label="Ordered Triage & Queue List" style={{ padding: '1.25rem', backgroundColor: '#ffffff' }}>
+          <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--ink-primary)' }}>
             Allocated Inspection Priority Queue ({queue.length}/{incident.slot_count} Slots)
           </h3>
           {queue.length === 0 ? (
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-ink-muted)' }}>
+            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-muted)', marginBottom: '1rem' }}>
               No facilities currently allocated to priority queue.
             </p>
           ) : (
-            <ol style={{ paddingLeft: '1.25rem', marginBottom: '1rem', fontSize: 'var(--font-size-sm)' }}>
+            <ol style={{ paddingLeft: '1.25rem', marginBottom: '1.25rem', fontSize: 'var(--text-xs)', lineHeight: 1.6 }}>
               {queue.map((item) => (
                 <li key={item.record_id} style={{ marginBottom: '0.5rem' }}>
                   <button
@@ -106,7 +110,7 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
                       padding: 0,
                       textAlign: 'left',
                       cursor: 'pointer',
-                      color: 'var(--color-ink-primary)',
+                      color: 'var(--ink-primary)',
                       textDecoration: 'underline',
                     }}
                   >
@@ -120,15 +124,15 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
             </ol>
           )}
 
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, marginBottom: '0.5rem' }}>
+          <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--ink-primary)' }}>
             Waitlist Secondary Allocation ({waitlist.length} Facilities)
           </h3>
           {waitlist.length === 0 ? (
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-ink-muted)' }}>
+            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-muted)', marginBottom: '1.25rem' }}>
               No facilities in waitlist.
             </p>
           ) : (
-            <ol style={{ paddingLeft: '1.25rem', marginBottom: '1rem', fontSize: 'var(--font-size-sm)' }}>
+            <ol style={{ paddingLeft: '1.25rem', marginBottom: '1.25rem', fontSize: 'var(--text-xs)', lineHeight: 1.6 }}>
               {waitlist.map((item) => (
                 <li key={item.record_id} style={{ marginBottom: '0.5rem' }}>
                   <button
@@ -140,7 +144,7 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
                       padding: 0,
                       textAlign: 'left',
                       cursor: 'pointer',
-                      color: 'var(--color-ink-primary)',
+                      color: 'var(--ink-primary)',
                       textDecoration: 'underline',
                     }}
                   >
@@ -152,10 +156,10 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
             </ol>
           )}
 
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, marginBottom: '0.5rem' }}>
+          <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--ink-primary)' }}>
             All Registered Facilities ({facilities.length} Total)
           </h3>
-          <ul style={{ paddingLeft: '1.25rem', fontSize: 'var(--font-size-sm)' }}>
+          <ul style={{ paddingLeft: '1.25rem', fontSize: 'var(--text-xs)', lineHeight: 1.6 }}>
             {facilities.map((fac) => (
               <li key={fac.record_id} style={{ marginBottom: '0.375rem' }}>
                 <button
@@ -167,7 +171,7 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
                     padding: 0,
                     textAlign: 'left',
                     cursor: 'pointer',
-                    color: 'var(--color-ink-primary)',
+                    color: 'var(--ink-primary)',
                     textDecoration: 'underline',
                   }}
                 >
@@ -180,15 +184,15 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
         </div>
       ) : (
         /* Spatial Diagram Layout */
-        <div>
+        <div style={{ padding: '1rem', backgroundColor: '#ffffff' }}>
           {/* Priority Queue Dispatch Track (Top Banner) */}
           <div
             style={{
-              backgroundColor: 'var(--color-bg-canvas-subtle)',
-              border: '1px solid var(--color-border-default)',
+              backgroundColor: 'var(--canvas-subtle)',
+              border: '1px solid var(--border-subtle)',
               borderRadius: 'var(--radius-sm)',
-              padding: '0.75rem',
-              marginBottom: '1rem',
+              padding: '0.875rem',
+              marginBottom: '1.25rem',
             }}
           >
             <div
@@ -196,13 +200,24 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                marginBottom: '0.5rem',
+                marginBottom: '0.625rem',
               }}
             >
-              <span style={{ fontWeight: 700, fontSize: 'var(--font-size-sm)', color: 'var(--color-hazard)' }}>
-                DISPATCH QUEUE ({queue.length} / {incident.slot_count} Active Slots)
-              </span>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-ink-muted)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: 'var(--accent-seismic)',
+                  }}
+                />
+                <span style={{ fontWeight: 800, fontSize: 'var(--text-xs)', color: 'var(--accent-seismic)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  DISPATCH QUEUE ({queue.length} / {incident.slot_count} Active Capacity)
+                </span>
+              </div>
+              <span style={{ fontSize: 'var(--text-2xs)', color: 'var(--ink-secondary)', fontWeight: 600 }}>
                 Timeout: {incident.assignment_timeout_seconds}s
               </span>
             </div>
@@ -210,22 +225,23 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
             {queue.length === 0 ? (
               <div
                 style={{
-                  padding: '1rem',
+                  padding: '1.5rem',
                   textAlign: 'center',
-                  color: 'var(--color-ink-muted)',
-                  fontSize: 'var(--font-size-xs)',
-                  border: '1px dashed var(--color-border-subtle)',
+                  color: 'var(--ink-muted)',
+                  fontSize: 'var(--text-xs)',
+                  border: '1px dashed var(--border-subtle)',
                   borderRadius: 'var(--radius-xs)',
+                  backgroundColor: '#ffffff',
                 }}
               >
-                No facilities allocated to dispatch queue yet. Lock cohort, run evaluations, and finalize allocation.
+                No facilities allocated to dispatch queue yet. Complete registration, lock cohort, run consensus evaluations, and finalize allocation.
               </div>
             ) : (
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(13rem, 1fr))',
-                  gap: '0.5rem',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(14rem, 1fr))',
+                  gap: '0.625rem',
                 }}
               >
                 {queue.map((q) => {
@@ -246,18 +262,16 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
                         }
                       }}
                       style={{
-                        padding: '0.5rem',
+                        padding: '0.625rem',
                         borderRadius: 'var(--radius-xs)',
-                        backgroundColor: isSelected
-                          ? 'var(--color-bg-canvas)'
-                          : 'var(--color-bg-canvas)',
-                        border: isSelected
-                          ? '2px solid var(--color-hazard)'
-                          : '1px solid var(--color-border-default)',
+                        backgroundColor: isSelected ? 'var(--accent-seismic-subtle)' : '#ffffff',
+                        border: isSelected ? '2px solid var(--accent-seismic)' : '1px solid var(--border-subtle)',
+                        boxShadow: 'var(--shadow-sm)',
                         cursor: 'pointer',
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: '0.25rem',
+                        gap: '0.375rem',
+                        transition: 'border-color var(--duration-fast), background-color var(--duration-fast)',
                       }}
                     >
                       <div
@@ -265,10 +279,10 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          fontSize: 'var(--font-size-xs)',
+                          fontSize: 'var(--text-2xs)',
                         }}
                       >
-                        <span style={{ fontWeight: 700 }}>
+                        <span style={{ fontWeight: 800, color: 'var(--accent-seismic)' }}>
                           Slot #{q.queue_position}
                         </span>
                         <span className={`badge ${decisionInfo.badgeClass}`}>
@@ -276,7 +290,7 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
                         </span>
                       </div>
 
-                      <div style={{ fontWeight: 600, fontSize: 'var(--font-size-sm)' }}>
+                      <div style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--ink-primary)' }}>
                         {q.facility_id}
                       </div>
 
@@ -285,8 +299,8 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          fontSize: 'var(--font-size-xs)',
-                          color: 'var(--color-ink-muted)',
+                          fontSize: 'var(--text-2xs)',
+                          color: 'var(--ink-muted)',
                         }}
                       >
                         <span>Bucket: {q.location_bucket}</span>
@@ -300,9 +314,10 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
                           className="mono"
                           style={{
                             fontSize: '0.625rem',
-                            color: 'var(--color-verified)',
+                            color: 'var(--accent-teal)',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
+                            fontWeight: 600,
                           }}
                         >
                           → {formatAddress(q.assigned_inspector)}
@@ -321,7 +336,7 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(16rem, 1fr))',
               gap: '1rem',
-              marginBottom: '1rem',
+              marginBottom: '1.25rem',
             }}
           >
             {incident.allowed_location_buckets.map((bucket) => {
@@ -331,33 +346,33 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
                 <div
                   key={bucket}
                   style={{
-                    border: '1px solid var(--color-border-default)',
+                    border: '1px solid var(--border-subtle)',
                     borderRadius: 'var(--radius-sm)',
-                    backgroundColor: 'var(--color-bg-canvas)',
+                    backgroundColor: 'var(--canvas-subtle)',
                     overflow: 'hidden',
                   }}
                 >
                   <div
                     style={{
                       padding: '0.5rem 0.75rem',
-                      backgroundColor: 'var(--color-bg-canvas-subtle)',
-                      borderBottom: '1px solid var(--color-border-subtle)',
+                      backgroundColor: '#ffffff',
+                      borderBottom: '1px solid var(--border-subtle)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
                     }}
                   >
-                    <span style={{ fontWeight: 700, fontSize: 'var(--font-size-sm)' }}>
+                    <span style={{ fontWeight: 800, fontSize: 'var(--text-xs)', color: 'var(--ink-primary)' }}>
                       Location: {bucket}
                     </span>
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-ink-muted)' }}>
+                    <span style={{ fontSize: 'var(--text-2xs)', color: 'var(--ink-muted)', fontWeight: 600 }}>
                       {bucketFacilities.length} facilities
                     </span>
                   </div>
 
                   <div
                     style={{
-                      padding: '0.5rem',
+                      padding: '0.625rem',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '0.5rem',
@@ -367,14 +382,14 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
                     {bucketFacilities.length === 0 ? (
                       <div
                         style={{
-                          fontSize: 'var(--font-size-xs)',
-                          color: 'var(--color-ink-muted)',
+                          fontSize: 'var(--text-2xs)',
+                          color: 'var(--ink-muted)',
                           fontStyle: 'italic',
                           textAlign: 'center',
-                          padding: '1rem 0',
+                          padding: '1.25rem 0',
                         }}
                       >
-                        No registered facilities
+                        No registered facilities in this bucket
                       </div>
                     ) : (
                       bucketFacilities.map((fac) => {
@@ -395,15 +410,17 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
                               }
                             }}
                             style={{
-                              padding: '0.5rem',
+                              padding: '0.625rem',
                               borderRadius: 'var(--radius-xs)',
                               backgroundColor: isSelected
-                                ? 'var(--color-bg-canvas-subtle)'
-                                : 'var(--color-bg-canvas)',
+                                ? 'var(--accent-teal-subtle)'
+                                : '#ffffff',
                               border: isSelected
-                                ? '2px solid var(--color-verified)'
-                                : '1px solid var(--color-border-subtle)',
+                                ? '2px solid var(--accent-teal)'
+                                : '1px solid var(--border-hairline)',
                               cursor: 'pointer',
+                              boxShadow: 'var(--shadow-sm)',
+                              transition: 'border-color var(--duration-fast)',
                             }}
                           >
                             <div
@@ -411,13 +428,13 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
-                                marginBottom: '0.25rem',
+                                marginBottom: '0.375rem',
                               }}
                             >
-                              <span style={{ fontWeight: 600, fontSize: 'var(--font-size-xs)' }}>
+                              <span style={{ fontWeight: 700, fontSize: 'var(--text-xs)', color: 'var(--ink-primary)' }}>
                                 #{fac.record_id} {fac.facility_id}
                               </span>
-                              <span className={`badge ${decisionInfo.badgeClass}`} style={{ fontSize: '0.625rem' }}>
+                              <span className={`badge ${decisionInfo.badgeClass}`}>
                                 {fac.decision === 'NONE' ? fac.status : `${fac.priority_score} pts`}
                               </span>
                             </div>
@@ -427,8 +444,8 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
-                                fontSize: '0.6875rem',
-                                color: 'var(--color-ink-muted)',
+                                fontSize: 'var(--text-2xs)',
+                                color: 'var(--ink-secondary)',
                               }}
                             >
                               <span>
@@ -448,39 +465,132 @@ export const SpatialQueueBoard: React.FC<SpatialQueueBoardProps> = ({
             })}
           </div>
 
+          {/* Structured Operational Facility Priority Table */}
+          {facilities.length > 0 && (
+            <div style={{ marginBottom: '1.25rem' }}>
+              <div style={{ fontWeight: 800, fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.5rem' }}>
+                Operational Facility Roster ({facilities.length} Records)
+              </div>
+              <div style={{ overflowX: 'auto', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)' }}>
+                <table className="op-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Facility ID</th>
+                      <th>Bucket</th>
+                      <th>Class & Age</th>
+                      <th>Decision Band</th>
+                      <th>Score</th>
+                      <th>Evidence</th>
+                      <th>Assignment</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {facilities.map((f) => {
+                      const isSel = selectedFacilityId === f.record_id;
+                      const dec = formatDecisionBand(f.decision);
+                      const evi = formatEvidenceStatus(f.evidence_status);
+                      const ass = formatAssignmentStatus(f.assignment_status);
+                      const facSt = formatFacilityStatus(f.status);
+
+                      return (
+                        <tr
+                          key={f.record_id}
+                          className={isSel ? 'selected' : ''}
+                          onClick={() => onSelectFacility(f.record_id)}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <td style={{ fontWeight: 700 }}>#{f.record_id}</td>
+                          <td style={{ fontWeight: 700 }}>{f.facility_id}</td>
+                          <td>{f.location_bucket}</td>
+                          <td>
+                            {f.use_class} <span style={{ color: 'var(--ink-muted)', fontSize: 'var(--text-2xs)' }}>({f.age_band})</span>
+                          </td>
+                          <td>
+                            <span className={`badge ${dec.badgeClass}`}>{dec.label}</span>
+                          </td>
+                          <td style={{ fontWeight: 700 }}>
+                            {f.status === 'DECIDED' ? `${f.priority_score}/100` : facSt.label}
+                          </td>
+                          <td>
+                            <span className={`badge ${evi.badgeClass}`}>{evi.label}</span>
+                          </td>
+                          <td>
+                            {f.queue_position > 0 ? (
+                              <span style={{ fontWeight: 700, color: 'var(--accent-seismic)' }}>
+                                Queue #{f.queue_position}
+                              </span>
+                            ) : f.waitlist_position > 0 ? (
+                              <span style={{ fontWeight: 600, color: 'var(--accent-teal)' }}>
+                                Waitlist #{f.waitlist_position}
+                              </span>
+                            ) : (
+                              <span style={{ color: 'var(--ink-muted)' }}>-</span>
+                            )}
+                            <div style={{ marginTop: '0.125rem' }}>
+                              <span className={`badge ${ass.badgeClass}`} style={{ fontSize: '0.625rem' }}>
+                                {ass.label}
+                              </span>
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              className="btn btn-secondary btn-sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onSelectFacility(f.record_id);
+                              }}
+                            >
+                              Inspect →
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
           {/* Diagram Legend */}
           <div
             style={{
-              padding: '0.75rem',
-              backgroundColor: 'var(--color-bg-canvas-subtle)',
+              padding: '0.75rem 1rem',
+              backgroundColor: 'var(--canvas-subtle)',
               borderRadius: 'var(--radius-xs)',
-              fontSize: 'var(--font-size-xs)',
+              border: '1px solid var(--border-subtle)',
+              fontSize: 'var(--text-xs)',
               display: 'flex',
               flexWrap: 'wrap',
               alignItems: 'center',
               gap: '1rem',
             }}
           >
-            <span style={{ fontWeight: 700, color: 'var(--color-ink-primary)' }}>Legend:</span>
+            <span style={{ fontWeight: 800, color: 'var(--ink-primary)', textTransform: 'uppercase', fontSize: 'var(--text-2xs)', letterSpacing: '0.04em' }}>
+              Legend:
+            </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
               <span className="badge badge-immediate">80-100</span>
-              <span>Immediate Review</span>
+              <span style={{ fontSize: 'var(--text-2xs)', color: 'var(--ink-secondary)' }}>Immediate Review</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
               <span className="badge badge-priority">60-79</span>
-              <span>Priority Queue</span>
+              <span style={{ fontSize: 'var(--text-2xs)', color: 'var(--ink-secondary)' }}>Priority Queue</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
               <span className="badge badge-monitor">40-59</span>
-              <span>Monitor</span>
+              <span style={{ fontSize: 'var(--text-2xs)', color: 'var(--ink-secondary)' }}>Monitor</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
               <span className="badge badge-outofscope">0-39</span>
-              <span>Out of Scope</span>
+              <span style={{ fontSize: 'var(--text-2xs)', color: 'var(--ink-secondary)' }}>Out of Scope</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
               <span className="badge badge-verified">Verified</span>
-              <span>Digest Verified</span>
+              <span style={{ fontSize: 'var(--text-2xs)', color: 'var(--ink-secondary)' }}>Digest Verified</span>
             </div>
           </div>
         </div>

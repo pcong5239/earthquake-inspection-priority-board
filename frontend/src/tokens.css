@@ -1,63 +1,84 @@
-/* Hallmark: Macrostructure=Map/Diagram | Genre=Operations-Board | Anchor=Hazard-Orange */
+/* Earthquake Inspection Priority Board — Seismic Command Center Design Tokens */
 
 :root {
-  /* Canvas & Ink (Cool Bone & Graphite) */
-  --canvas-base: oklch(0.96 0.01 90);
-  --canvas-subtle: oklch(0.93 0.015 90);
-  --canvas-surface: oklch(0.98 0.005 90);
-  --canvas-elevated: oklch(1 0 0);
+  /* Canvas & Surface (Warm Light Mineral & Pure White) */
+  --canvas-base: #f5f4ef;
+  --canvas-subtle: #eceae3;
+  --canvas-card: #ffffff;
+  --canvas-card-elevated: #ffffff;
+  --canvas-sidebar: #efede6;
+  --canvas-accent-subtle: #fbf7f4;
 
-  --ink-primary: oklch(0.20 0.02 260);
-  --ink-secondary: oklch(0.38 0.03 260);
-  --ink-muted: oklch(0.55 0.02 260);
-  --ink-on-accent: oklch(0.98 0.005 90);
+  /* Typography & Ink (Deep Graphite & Navy Slate) */
+  --ink-primary: #141b24;
+  --ink-secondary: #3b4754;
+  --ink-muted: #6b7785;
+  --ink-faint: #9aa5b1;
+  --ink-inverse: #ffffff;
 
-  /* Hazard Orange (Active Incident / Critical Evaluation) */
-  --accent-hazard: oklch(0.65 0.20 45);
-  --accent-hazard-hover: oklch(0.58 0.18 45);
-  --accent-hazard-tint: oklch(0.94 0.05 45);
-  --accent-hazard-border: oklch(0.78 0.12 45);
+  /* Restrained Operational Accent (Seismic Orange) */
+  --accent-seismic: #d24317;
+  --accent-seismic-hover: #b8340d;
+  --accent-seismic-active: #962808;
+  --accent-seismic-subtle: #faeee9;
+  --accent-seismic-border: #f2b8a4;
 
-  /* Verified Indigo (Proven Evidence / High Priority Allocation) */
-  --accent-indigo: oklch(0.45 0.18 270);
-  --accent-indigo-hover: oklch(0.38 0.16 270);
-  --accent-indigo-tint: oklch(0.94 0.04 270);
-  --accent-indigo-border: oklch(0.75 0.10 270);
+  /* Verified & Network Accent (Deep Ocean Teal / Studionet) */
+  --accent-teal: #0d707c;
+  --accent-teal-hover: #09545e;
+  --accent-teal-subtle: #e6f5f7;
+  --accent-teal-border: #9dd8df;
 
-  /* Unresolved / Disabled Slate */
-  --accent-slate: oklch(0.55 0.03 240);
-  --accent-slate-tint: oklch(0.92 0.015 240);
-  --accent-slate-border: oklch(0.78 0.02 240);
+  /* Neutral Slate (Unresolved / Standby / Inactive) */
+  --accent-slate: #52606d;
+  --accent-slate-subtle: #edf0f2;
+  --accent-slate-border: #cbd2d9;
 
-  /* Decision Band Semantics */
-  --band-immediate: oklch(0.60 0.22 35);
-  --band-immediate-tint: oklch(0.94 0.06 35);
-  --band-priority: oklch(0.65 0.18 55);
-  --band-priority-tint: oklch(0.94 0.05 55);
-  --band-monitor: oklch(0.58 0.14 150);
-  --band-monitor-tint: oklch(0.94 0.04 150);
-  --band-out-of-scope: oklch(0.48 0.06 80);
-  --band-out-of-scope-tint: oklch(0.93 0.02 80);
-  --band-unresolved: oklch(0.55 0.04 250);
-  --band-unresolved-tint: oklch(0.92 0.02 250);
+  /* Decision Band Semantics (Strict Contract Parity) */
+  --band-immediate-color: #b02515;
+  --band-immediate-bg: #fae8e6;
+  --band-immediate-border: #f1aeb5;
+
+  --band-priority-color: #c0460c;
+  --band-priority-bg: #fbeee7;
+  --band-priority-border: #f8be9a;
+
+  --band-monitor-color: #1e7035;
+  --band-monitor-bg: #eaf5ec;
+  --band-monitor-border: #a3d9b0;
+
+  --band-outofscope-color: #4b5563;
+  --band-outofscope-bg: #f3f4f6;
+  --band-outofscope-border: #d1d5db;
+
+  --band-unresolved-color: #6b21a8;
+  --band-unresolved-bg: #f3e8ff;
+  --band-unresolved-border: #d8b4fe;
 
   /* Status Colors */
-  --status-success: oklch(0.52 0.16 145);
-  --status-success-tint: oklch(0.94 0.04 145);
-  --status-error: oklch(0.52 0.22 25);
-  --status-error-tint: oklch(0.94 0.05 25);
-  --status-warning: oklch(0.62 0.18 60);
-  --status-warning-tint: oklch(0.94 0.05 60);
+  --status-success: #15803d;
+  --status-success-bg: #f0fdf4;
+  --status-success-border: #bbf7d0;
+
+  --status-error: #b91c1c;
+  --status-error-bg: #fef2f2;
+  --status-error-border: #fecaca;
+
+  --status-warning: #b45309;
+  --status-warning-bg: #fffbeb;
+  --status-warning-border: #fde68a;
 
   /* Structural Hairlines & Borders */
-  --border-hairline: oklch(0.85 0.015 90);
-  --border-strong: oklch(0.72 0.02 90);
-  --border-focus: oklch(0.55 0.18 45);
+  --border-hairline: #e2dfd5;
+  --border-subtle: #d6d2c4;
+  --border-strong: #a9a495;
+  --border-focus: #d24317;
 
   /* Typography */
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "SF Mono", "Consolas", "Liberation Mono", "Menlo", "Courier New", monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Consolas", "Liberation Mono", "Menlo", monospace;
 
+  --text-3xs: 0.625rem;
   --text-2xs: 0.6875rem;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -65,15 +86,14 @@
   --text-lg: 1.125rem;
   --text-xl: 1.25rem;
   --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
 
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
+  --font-weight-black: 800;
 
   /* Spacing */
-  --space-0-5: 0.125rem;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -83,7 +103,6 @@
   --space-8: 2rem;
   --space-10: 2.5rem;
   --space-12: 3rem;
-  --space-16: 4rem;
 
   /* Radii */
   --radius-xs: 2px;
@@ -93,23 +112,21 @@
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.09), 0 4px 6px -4px rgb(0 0 0 / 0.06);
-  --shadow-tray: 0 20px 25px -5px rgb(0 0 0 / 0.12), 0 8px 10px -6px rgb(0 0 0 / 0.08);
+  --shadow-sm: 0 1px 2px 0 rgba(20, 27, 36, 0.04);
+  --shadow-card: 0 1px 3px 0 rgba(20, 27, 36, 0.06), 0 1px 2px -1px rgba(20, 27, 36, 0.04);
+  --shadow-elevated: 0 4px 12px -2px rgba(20, 27, 36, 0.08), 0 2px 6px -1px rgba(20, 27, 36, 0.04);
+  --shadow-modal: 0 20px 25px -5px rgba(20, 27, 36, 0.15), 0 8px 10px -6px rgba(20, 27, 36, 0.08);
+  --shadow-tray: 0 12px 24px -4px rgba(20, 27, 36, 0.18), 0 4px 8px -2px rgba(20, 27, 36, 0.08);
 
-  /* Motion & Transitions */
+  /* Transitions */
   --duration-fast: 120ms;
-  --duration-base: 220ms;
-  --duration-slow: 350ms;
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-normal: 200ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
   :root {
     --duration-fast: 0ms;
-    --duration-base: 0ms;
-    --duration-slow: 0ms;
+    --duration-normal: 0ms;
   }
 }

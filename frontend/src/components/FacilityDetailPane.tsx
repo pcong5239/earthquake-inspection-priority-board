@@ -83,32 +83,37 @@ export const FacilityDetailPane: React.FC<FacilityDetailPaneProps> = ({
     <aside
       aria-label="Facility Detail Inspector"
       className="panel"
-      style={{ marginBottom: '1rem', border: '1px solid var(--color-border-focus)' }}
+      style={{
+        marginBottom: '1.25rem',
+        border: '1px solid var(--accent-teal)',
+        boxShadow: 'var(--shadow-elevated)',
+        backgroundColor: '#ffffff',
+        overflow: 'hidden',
+      }}
     >
       {/* Pane Header */}
       <div
         style={{
+          padding: '0.875rem 1rem',
+          backgroundColor: 'var(--accent-teal-subtle)',
+          borderBottom: '1px solid var(--accent-teal-border)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          borderBottom: '1px solid var(--color-border-subtle)',
-          paddingBottom: '0.75rem',
-          marginBottom: '0.75rem',
         }}
       >
         <div>
-          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-ink-muted)' }}>
+          <div style={{ fontSize: 'var(--text-3xs)', color: 'var(--accent-teal)', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.04em' }}>
             Facility Record #{facility.record_id} • Incident #{facility.incident_id}
           </div>
-          <h3 style={{ fontSize: 'var(--font-size-base)', fontWeight: 700 }}>
+          <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 800, color: 'var(--ink-primary)', marginTop: '0.125rem' }}>
             {facility.facility_id}
           </h3>
         </div>
 
         <button
           type="button"
-          className="btn btn-secondary"
-          style={{ padding: '0.25rem 0.5rem', fontSize: 'var(--font-size-xs)' }}
+          className="btn btn-secondary btn-sm"
           onClick={onClose}
           aria-label="Close Facility Inspector"
         >
@@ -116,253 +121,283 @@ export const FacilityDetailPane: React.FC<FacilityDetailPaneProps> = ({
         </button>
       </div>
 
-      {/* Grid of Key Properties */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(13rem, 1fr))',
-          gap: '0.75rem',
-          fontSize: 'var(--font-size-xs)',
-          marginBottom: '1rem',
-        }}
-      >
-        <div>
-          <div style={{ color: 'var(--color-ink-muted)', marginBottom: '0.125rem' }}>Status & Decision</div>
-          <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap' }}>
-            <span className={`badge ${facilityStatusInfo.badgeClass}`}>{facilityStatusInfo.label}</span>
-            <span className={`badge ${decisionInfo.badgeClass}`}>{decisionInfo.label}</span>
-          </div>
-        </div>
-
-        <div>
-          <div style={{ color: 'var(--color-ink-muted)', marginBottom: '0.125rem' }}>Priority Score</div>
-          <div style={{ fontWeight: 700, fontSize: 'var(--font-size-sm)' }}>
-            {facility.priority_score} / 100 {facility.eligible ? '• Eligible' : '• Ineligible'}
-          </div>
-        </div>
-
-        <div>
-          <div style={{ color: 'var(--color-ink-muted)', marginBottom: '0.125rem' }}>Location Bucket</div>
-          <div style={{ fontWeight: 600 }}>{facility.location_bucket}</div>
-        </div>
-
-        <div>
-          <div style={{ color: 'var(--color-ink-muted)', marginBottom: '0.125rem' }}>Use & Occupancy</div>
-          <div style={{ fontWeight: 600 }}>
-            {facility.use_class} • {facility.occupancy_band} ({facility.age_band})
-          </div>
-        </div>
-
-        <div>
-          <div style={{ color: 'var(--color-ink-muted)', marginBottom: '0.125rem' }}>Queue Allocation</div>
-          <div style={{ fontWeight: 600 }}>
-            {facility.queue_position > 0
-              ? `Queue Slot #${facility.queue_position}`
-              : facility.waitlist_position > 0
-              ? `Waitlist #${facility.waitlist_position}`
-              : 'Unassigned'}
-          </div>
-        </div>
-
-        <div>
-          <div style={{ color: 'var(--color-ink-muted)', marginBottom: '0.125rem' }}>Evidence Status</div>
-          <div>
-            <span className={`badge ${evidenceInfo.badgeClass}`}>{evidenceInfo.label}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Web Evidence Source & Digest */}
-      <div
-        style={{
-          padding: '0.625rem',
-          backgroundColor: 'var(--color-bg-canvas-subtle)',
-          borderRadius: 'var(--radius-xs)',
-          fontSize: 'var(--font-size-xs)',
-          marginBottom: '1rem',
-        }}
-      >
-        <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>Evidence Verification Payload</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-          <div>
-            <span style={{ color: 'var(--color-ink-muted)' }}>Evidence URL: </span>
-            <a
-              href={facility.evidence_url}
-              target="_blank"
-              rel="noreferrer"
-              style={{ color: 'var(--color-verified)', textDecoration: 'underline' }}
-            >
-              {facility.evidence_url}
-            </a>
-          </div>
-          <div>
-            <span style={{ color: 'var(--color-ink-muted)' }}>Expected SHA-256 Digest: </span>
-            <span className="mono" style={{ fontSize: '0.6875rem' }}>
-              {facility.expected_evidence_digest}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Consensus Reason & Reason Codes */}
-      {(facility.reason || facility.reason_codes.length > 0) && (
+      <div style={{ padding: '1rem' }}>
+        {/* Grid of Key Properties */}
         <div
           style={{
-            padding: '0.625rem',
-            backgroundColor: 'var(--color-bg-canvas-subtle)',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(11rem, 1fr))',
+            gap: '0.75rem',
+            fontSize: 'var(--text-xs)',
+            marginBottom: '1rem',
+            paddingBottom: '0.875rem',
+            borderBottom: '1px solid var(--border-hairline)',
+          }}
+        >
+          <div>
+            <div style={{ color: 'var(--ink-muted)', fontSize: 'var(--text-2xs)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+              Status & Decision
+            </div>
+            <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap' }}>
+              <span className={`badge ${facilityStatusInfo.badgeClass}`}>{facilityStatusInfo.label}</span>
+              <span className={`badge ${decisionInfo.badgeClass}`}>{decisionInfo.label}</span>
+            </div>
+          </div>
+
+          <div>
+            <div style={{ color: 'var(--ink-muted)', fontSize: 'var(--text-2xs)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+              Priority Score
+            </div>
+            <div style={{ fontWeight: 800, fontSize: 'var(--text-sm)', color: 'var(--ink-primary)' }}>
+              {facility.priority_score} / 100{' '}
+              <span style={{ fontSize: 'var(--text-2xs)', color: facility.eligible ? 'var(--status-success)' : 'var(--ink-muted)' }}>
+                {facility.eligible ? '• Eligible' : '• Ineligible'}
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <div style={{ color: 'var(--ink-muted)', fontSize: 'var(--text-2xs)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+              Location Bucket
+            </div>
+            <div style={{ fontWeight: 700, color: 'var(--ink-primary)' }}>{facility.location_bucket}</div>
+          </div>
+
+          <div>
+            <div style={{ color: 'var(--ink-muted)', fontSize: 'var(--text-2xs)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+              Use & Occupancy
+            </div>
+            <div style={{ fontWeight: 600, color: 'var(--ink-primary)' }}>
+              {facility.use_class} • {facility.occupancy_band} ({facility.age_band})
+            </div>
+          </div>
+
+          <div>
+            <div style={{ color: 'var(--ink-muted)', fontSize: 'var(--text-2xs)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+              Queue Allocation
+            </div>
+            <div style={{ fontWeight: 700, color: 'var(--accent-seismic)' }}>
+              {facility.queue_position > 0
+                ? `Queue Slot #${facility.queue_position}`
+                : facility.waitlist_position > 0
+                ? `Waitlist #${facility.waitlist_position}`
+                : 'Unassigned'}
+            </div>
+          </div>
+
+          <div>
+            <div style={{ color: 'var(--ink-muted)', fontSize: 'var(--text-2xs)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+              Evidence Status
+            </div>
+            <div>
+              <span className={`badge ${evidenceInfo.badgeClass}`}>{evidenceInfo.label}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Web Evidence Source & Digest */}
+        <div
+          style={{
+            padding: '0.75rem',
+            backgroundColor: 'var(--canvas-subtle)',
+            border: '1px solid var(--border-subtle)',
             borderRadius: 'var(--radius-xs)',
-            fontSize: 'var(--font-size-xs)',
+            fontSize: 'var(--text-xs)',
             marginBottom: '1rem',
           }}
         >
-          <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>
-            Consensus Evaluation Findings (Attempt #{facility.evaluation_attempts})
+          <div style={{ fontWeight: 800, fontSize: 'var(--text-2xs)', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--ink-secondary)', marginBottom: '0.375rem' }}>
+            Evidence Verification Payload
           </div>
-          {facility.reason && (
-            <p style={{ marginBottom: '0.5rem', lineHeight: 1.4 }}>{facility.reason}</p>
-          )}
-          {facility.reason_codes.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
             <div>
-              <div style={{ color: 'var(--color-ink-muted)', marginBottom: '0.25rem' }}>Reason Codes:</div>
-              <ul style={{ paddingLeft: '1.25rem', margin: 0 }}>
-                {facility.reason_codes.map((code) => (
-                  <li key={code}>
-                    <strong>{code}:</strong> {formatReasonCode(code)}
-                  </li>
-                ))}
-              </ul>
+              <span style={{ color: 'var(--ink-muted)' }}>Evidence URL: </span>
+              <a
+                href={facility.evidence_url}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: 'var(--accent-teal)', fontWeight: 600, textDecoration: 'underline' }}
+              >
+                {facility.evidence_url}
+              </a>
             </div>
-          )}
-        </div>
-      )}
-
-      {/* Assignment & Inspector Status */}
-      <div
-        style={{
-          padding: '0.625rem',
-          backgroundColor: 'var(--color-bg-canvas-subtle)',
-          borderRadius: 'var(--radius-xs)',
-          fontSize: 'var(--font-size-xs)',
-          marginBottom: '1rem',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: '0.25rem',
-          }}
-        >
-          <span style={{ fontWeight: 600 }}>Inspection Assignment</span>
-          <span className={`badge ${assignmentInfo.badgeClass}`}>{assignmentInfo.label}</span>
+            <div>
+              <span style={{ color: 'var(--ink-muted)' }}>Expected SHA-256 Digest: </span>
+              <span className="mono" style={{ fontSize: 'var(--text-2xs)', color: 'var(--ink-secondary)', wordBreak: 'break-all' }}>
+                {facility.expected_evidence_digest}
+              </span>
+            </div>
+          </div>
         </div>
 
-        {facility.assigned_inspector && (
-          <div style={{ marginBottom: '0.25rem' }}>
-            <span style={{ color: 'var(--color-ink-muted)' }}>Assigned Inspector: </span>
-            <a
-              href={getExplorerAddressUrl(facility.assigned_inspector)}
-              target="_blank"
-              rel="noreferrer"
-              className="mono"
-              style={{ color: 'var(--color-verified)', textDecoration: 'underline' }}
-            >
-              {facility.assigned_inspector}
-            </a>
-          </div>
-        )}
-
-        {facility.offered_at > 0 && (
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
-            <div>
-              <span style={{ color: 'var(--color-ink-muted)' }}>Offered At: </span>
-              <span>{formatTimestamp(facility.offered_at)}</span>
+        {/* Consensus Reason & Reason Codes */}
+        {(facility.reason || facility.reason_codes.length > 0) && (
+          <div
+            style={{
+              padding: '0.75rem',
+              backgroundColor: 'var(--canvas-subtle)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: 'var(--radius-xs)',
+              fontSize: 'var(--text-xs)',
+              marginBottom: '1rem',
+            }}
+          >
+            <div style={{ fontWeight: 800, fontSize: 'var(--text-2xs)', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--ink-secondary)', marginBottom: '0.375rem' }}>
+              Consensus Evaluation Findings (Attempt #{facility.evaluation_attempts})
             </div>
-            <div>
-              <span style={{ color: 'var(--color-ink-muted)' }}>Deadline: </span>
-              <span>{formatTimestamp(facility.assignment_deadline)}</span>
-            </div>
-            {facility.acknowledged_at > 0 && (
+            {facility.reason && (
+              <p style={{ marginBottom: '0.5rem', lineHeight: 1.45, color: 'var(--ink-primary)' }}>
+                {facility.reason}
+              </p>
+            )}
+            {facility.reason_codes.length > 0 && (
               <div>
-                <span style={{ color: 'var(--color-ink-muted)' }}>Acknowledged At: </span>
-                <span>{formatTimestamp(facility.acknowledged_at)}</span>
+                <div style={{ color: 'var(--ink-muted)', fontSize: 'var(--text-2xs)', fontWeight: 600, marginBottom: '0.25rem' }}>
+                  Reason Codes:
+                </div>
+                <ul style={{ paddingLeft: '1.25rem', margin: 0, lineHeight: 1.5 }}>
+                  {facility.reason_codes.map((code) => (
+                    <li key={code}>
+                      <strong style={{ color: 'var(--ink-primary)' }}>{code}:</strong> {formatReasonCode(code)}
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>
         )}
-      </div>
 
-      {/* Action Buttons */}
-      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-        {/* Evaluate Action (Permissionless) */}
-        {(incident.status === 'COHORT_LOCKED' || incident.status === 'EVALUATING') &&
-          (facility.status === 'LOCKED' || facility.status === 'UNRESOLVED') && (
+        {/* Assignment & Inspector Status */}
+        <div
+          style={{
+            padding: '0.75rem',
+            backgroundColor: 'var(--canvas-subtle)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-xs)',
+            fontSize: 'var(--text-xs)',
+            marginBottom: '1rem',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '0.375rem',
+            }}
+          >
+            <span style={{ fontWeight: 800, fontSize: 'var(--text-2xs)', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--ink-secondary)' }}>
+              Inspection Assignment
+            </span>
+            <span className={`badge ${assignmentInfo.badgeClass}`}>{assignmentInfo.label}</span>
+          </div>
+
+          {facility.assigned_inspector && (
+            <div style={{ marginBottom: '0.375rem' }}>
+              <span style={{ color: 'var(--ink-muted)' }}>Assigned Inspector: </span>
+              <a
+                href={getExplorerAddressUrl(facility.assigned_inspector)}
+                target="_blank"
+                rel="noreferrer"
+                className="mono"
+                style={{ color: 'var(--accent-teal)', fontWeight: 600, textDecoration: 'underline' }}
+              >
+                {facility.assigned_inspector} ↗
+              </a>
+            </div>
+          )}
+
+          {facility.offered_at > 0 && (
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.375rem', fontSize: 'var(--text-2xs)' }}>
+              <div>
+                <span style={{ color: 'var(--ink-muted)' }}>Offered At: </span>
+                <span style={{ fontWeight: 600 }}>{formatTimestamp(facility.offered_at)}</span>
+              </div>
+              <div>
+                <span style={{ color: 'var(--ink-muted)' }}>Deadline: </span>
+                <span style={{ fontWeight: 600 }}>{formatTimestamp(facility.assignment_deadline)}</span>
+              </div>
+              {facility.acknowledged_at > 0 && (
+                <div>
+                  <span style={{ color: 'var(--ink-muted)' }}>Acknowledged At: </span>
+                  <span style={{ fontWeight: 600 }}>{formatTimestamp(facility.acknowledged_at)}</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Action Buttons */}
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          {/* Evaluate Action (Permissionless on Studionet) */}
+          {(incident.status === 'COHORT_LOCKED' || incident.status === 'EVALUATING') &&
+            (facility.status === 'LOCKED' || facility.status === 'UNRESOLVED') && (
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={onEvaluate}
+                disabled={!canEvaluate}
+                title={
+                  !walletState.isConnected
+                    ? 'Connect wallet to execute evaluation'
+                    : 'Trigger GenLayer consensus evaluation of web evidence and policy rules'
+                }
+              >
+                Evaluate Facility (Consensus)
+              </button>
+            )}
+
+          {/* Offer Assignment (Operator Only) */}
+          {facility.decision === 'PRIORITY_QUEUE' && (
             <button
               type="button"
               className="btn btn-primary"
-              onClick={onEvaluate}
-              disabled={!canEvaluate}
+              onClick={onOfferAssignment}
+              disabled={!canOffer}
               title={
-                !walletState.isConnected
-                  ? 'Connect wallet to execute evaluation'
-                  : 'Trigger GenLayer consensus evaluation of web evidence and policy rules'
+                !isOperator
+                  ? 'Requires Operator wallet'
+                  : 'Offer assignment to an inspector address'
               }
             >
-              Evaluate Facility (Consensus)
+              Offer Assignment
             </button>
           )}
 
-        {/* Offer Assignment (Operator Only) */}
-        {facility.decision === 'PRIORITY_QUEUE' && (
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={onOfferAssignment}
-            disabled={!canOffer}
-            title={
-              !isOperator
-                ? 'Requires Operator wallet'
-                : 'Offer assignment to an inspector address'
-            }
-          >
-            Offer Assignment
-          </button>
-        )}
+          {/* Acknowledge Assignment (Assigned Inspector Only) */}
+          {facility.assignment_status === 'OFFERED' && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={onAcknowledgeAssignment}
+              disabled={!canAcknowledge}
+              title={
+                !walletState.isConnected
+                  ? 'Connect assigned inspector wallet'
+                  : !isAssignedInspector
+                  ? `Only assigned inspector (${formatAddress(facility.assigned_inspector)}) can acknowledge`
+                  : isOfferExpired
+                  ? 'Offer deadline has expired'
+                  : 'Acknowledge assignment offer'
+              }
+            >
+              Acknowledge Assignment
+            </button>
+          )}
 
-        {/* Acknowledge Assignment (Assigned Inspector Only) */}
-        {facility.assignment_status === 'OFFERED' && (
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={onAcknowledgeAssignment}
-            disabled={!canAcknowledge}
-            title={
-              !walletState.isConnected
-                ? 'Connect assigned inspector wallet'
-                : !isAssignedInspector
-                ? `Only assigned inspector (${formatAddress(facility.assigned_inspector)}) can acknowledge`
-                : isOfferExpired
-                ? 'Offer deadline has expired'
-                : 'Acknowledge assignment offer'
-            }
-          >
-            Acknowledge Assignment
-          </button>
-        )}
-
-        {/* Reclaim Expired Assignment (Permissionless) */}
-        {isOfferExpired && (
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={onReclaimAssignment}
-            disabled={!canReclaim}
-            title="Reclaim expired offer to restore queue slot for new assignment"
-          >
-            Reclaim Expired Assignment
-          </button>
-        )}
+          {/* Reclaim Expired Assignment (Permissionless) */}
+          {isOfferExpired && (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={onReclaimAssignment}
+              disabled={!canReclaim}
+              title="Reclaim expired offer to restore queue slot for new assignment"
+            >
+              Reclaim Expired Assignment
+            </button>
+          )}
+        </div>
       </div>
     </aside>
   );
