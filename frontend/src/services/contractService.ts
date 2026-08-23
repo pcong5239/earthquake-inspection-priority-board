@@ -402,9 +402,9 @@ export async function executeContractWrite(
 
   while (Date.now() - startTime < timeoutMs) {
     try {
-      const receipt = await client.getTransactionReceipt({ hash: txHash as `0x${string}` });
+      const receipt = await client.getTransaction({ hash: txHash as any });
       if (receipt && typeof receipt === 'object') {
-        const rawStatus = (receipt as any).status;
+        const rawStatus = (receipt as any).statusName ?? (receipt as any).status;
         if (typeof rawStatus === 'string') {
           const statusUpper = rawStatus.toUpperCase();
           if (statusUpper === TransactionStatus.FINALIZED || statusUpper === 'FINALIZED') {
@@ -436,8 +436,17 @@ export async function executeContractWrite(
 
   if (onPhaseChange) onPhaseChange('FINALIZED', { hash: txHash });
 
+  if (String(finalizedReceipt.result_name).toUpperCase() !== 'MAJORITY_AGREE') {
+    throw new Error('EXECUTION_ERROR: Finalized transaction did not reach majority agreement');
+  }
+
   // Verification of execution result
+  const leaderReceipts = finalizedReceipt.consensus_data?.leader_receipt;
+  const leaderReceipt = Array.isArray(leaderReceipts)
+    ? leaderReceipts.find((item: any) => item?.mode === 'leader')
+    : leaderReceipts;
   const execResult =
+    leaderReceipt?.execution_result ??
     finalizedReceipt.txExecutionResultName ??
     finalizedReceipt.executionResult ??
     finalizedReceipt.execution_result ??
@@ -451,9 +460,11 @@ export async function executeContractWrite(
 
   if (
     execResultUpper !== ExecutionResult.FINISHED_WITH_RETURN &&
-    execResultUpper !== 'FINISHED_WITH_RETURN'
+    execResultUpper !== 'FINISHED_WITH_RETURN' &&
+    execResultUpper !== 'SUCCESS'
   ) {
     const errorDetails =
+      leaderReceipt?.genvm_result?.stderr ||
       finalizedReceipt.errorMessage ||
       finalizedReceipt.error ||
       finalizedReceipt.txExecutionResult ||
@@ -466,7 +477,10 @@ export async function executeContractWrite(
   return {
     hash: txHash,
     receipt: finalizedReceipt,
-    returnData: finalizedReceipt.returnData ?? finalizedReceipt.return_data,
+    returnData:
+      leaderReceipt?.result?.payload?.readable ??
+      finalizedReceipt.returnData ??
+      finalizedReceipt.return_data,
   };
 }
 

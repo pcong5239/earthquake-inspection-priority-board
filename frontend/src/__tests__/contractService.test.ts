@@ -31,13 +31,13 @@ import type { EIP1193Provider } from '../types/wallet';
 
 const mockReadContract = vi.fn();
 const mockWriteContract = vi.fn();
-const mockGetTransactionReceipt = vi.fn();
+const mockGetTransaction = vi.fn();
 
 vi.mock('genlayer-js', () => ({
   createClient: vi.fn(() => ({
     readContract: mockReadContract,
     writeContract: mockWriteContract,
-    getTransactionReceipt: mockGetTransactionReceipt,
+    getTransaction: mockGetTransaction,
   })),
 }));
 
@@ -283,8 +283,9 @@ describe('GenLayer Contract Service & Exact 14-View / 10-Write ABI Parity', () =
 
   it('exercises all exact 10 write methods with strict argument structures', async () => {
     mockWriteContract.mockResolvedValue('0x' + 'f'.repeat(64));
-    mockGetTransactionReceipt.mockResolvedValue({
+    mockGetTransaction.mockResolvedValue({
       status: 'FINALIZED',
+      result_name: 'MAJORITY_AGREE',
       txExecutionResultName: 'FINISHED_WITH_RETURN',
       returnData: null,
     });
@@ -439,8 +440,9 @@ describe('GenLayer Contract Service & Exact 14-View / 10-Write ABI Parity', () =
 
     it('accepts strictly FINALIZED + FINISHED_WITH_RETURN as happy path', async () => {
       mockWriteContract.mockResolvedValue('0x' + '1'.repeat(64));
-      mockGetTransactionReceipt.mockResolvedValue({
+      mockGetTransaction.mockResolvedValue({
         status: 'FINALIZED',
+        result_name: 'MAJORITY_AGREE',
         txExecutionResultName: 'FINISHED_WITH_RETURN',
         returnData: { success: true },
       });
@@ -461,7 +463,7 @@ describe('GenLayer Contract Service & Exact 14-View / 10-Write ABI Parity', () =
       try {
         mockWriteContract.mockResolvedValue('0x' + '2'.repeat(64));
         // Always returns ACCEPTED
-        mockGetTransactionReceipt.mockResolvedValue({
+        mockGetTransaction.mockResolvedValue({
           status: 'ACCEPTED',
           txExecutionResultName: 'FINISHED_WITH_RETURN',
         });
@@ -486,8 +488,9 @@ describe('GenLayer Contract Service & Exact 14-View / 10-Write ABI Parity', () =
 
     it('fails closed when execution result is FINISHED_WITH_ERROR', async () => {
       mockWriteContract.mockResolvedValue('0x' + '3'.repeat(64));
-      mockGetTransactionReceipt.mockResolvedValue({
+      mockGetTransaction.mockResolvedValue({
         status: 'FINALIZED',
+        result_name: 'MAJORITY_AGREE',
         txExecutionResultName: 'FINISHED_WITH_ERROR',
         errorMessage: 'Caller is not operator',
       });
@@ -505,8 +508,9 @@ describe('GenLayer Contract Service & Exact 14-View / 10-Write ABI Parity', () =
 
     it('fails closed when execution result is missing or malformed', async () => {
       mockWriteContract.mockResolvedValue('0x' + '4'.repeat(64));
-      mockGetTransactionReceipt.mockResolvedValue({
+      mockGetTransaction.mockResolvedValue({
         status: 'FINALIZED',
+        result_name: 'MAJORITY_AGREE',
         // missing txExecutionResultName
       });
 
@@ -521,27 +525,50 @@ describe('GenLayer Contract Service & Exact 14-View / 10-Write ABI Parity', () =
       ).rejects.toThrow('EXECUTION_ERROR');
     });
 
-    it('fails closed when execution result is generic SUCCESS', async () => {
-      mockWriteContract.mockResolvedValue('0x' + '5'.repeat(64));
-      mockGetTransactionReceipt.mockResolvedValue({
-        status: 'FINALIZED',
-        txExecutionResultName: 'SUCCESS', // Not FINISHED_WITH_RETURN
+    it('fails closed when a finalized transaction lacks majority agreement', async () => {
+      mockWriteContract.mockResolvedValue('0x' + '8'.repeat(64));
+      mockGetTransaction.mockResolvedValue({
+        statusName: 'FINALIZED',
+        result_name: 'UNDETERMINED',
+        consensus_data: { leader_receipt: [{ mode: 'leader', execution_result: 'SUCCESS' }] },
       });
 
       await expect(
-        executeContractWrite(
-          dummyContract,
-          dummyAccount,
-          dummyProvider,
-          'lock_cohort',
-          [1]
-        )
-      ).rejects.toThrow('EXECUTION_ERROR');
+        executeContractWrite(dummyContract, dummyAccount, dummyProvider, 'lock_cohort', [1])
+      ).rejects.toThrow('majority agreement');
+    });
+
+    it('accepts the live Studionet getTransaction FINALIZED leader SUCCESS shape', async () => {
+      mockWriteContract.mockResolvedValue('0x' + '5'.repeat(64));
+      mockGetTransaction.mockResolvedValue({
+        status: 7,
+        statusName: 'FINALIZED',
+        result_name: 'MAJORITY_AGREE',
+        consensus_data: {
+          leader_receipt: [
+            {
+              mode: 'leader',
+              execution_result: 'SUCCESS',
+              result: { payload: { readable: 'null' } },
+              genvm_result: { stderr: '' },
+            },
+          ],
+        },
+      });
+
+      const result = await executeContractWrite(
+        dummyContract,
+        dummyAccount,
+        dummyProvider,
+        'lock_cohort',
+        [1]
+      );
+      expect(result.returnData).toBe('null');
     });
 
     it('fails closed immediately when receipt status is terminal CANCELED or UNDETERMINED', async () => {
       mockWriteContract.mockResolvedValue('0x' + '6'.repeat(64));
-      mockGetTransactionReceipt.mockResolvedValue({
+      mockGetTransaction.mockResolvedValue({
         status: 'CANCELED',
       });
 
@@ -558,10 +585,11 @@ describe('GenLayer Contract Service & Exact 14-View / 10-Write ABI Parity', () =
 
     it('recovers from transient polling errors and successfully finalizes', async () => {
       mockWriteContract.mockResolvedValue('0x' + '7'.repeat(64));
-      mockGetTransactionReceipt
+      mockGetTransaction
         .mockRejectedValueOnce(new Error('Network gateway timeout 504'))
         .mockResolvedValueOnce({
           status: 'FINALIZED',
+          result_name: 'MAJORITY_AGREE',
           txExecutionResultName: 'FINISHED_WITH_RETURN',
         });
 
