@@ -70,12 +70,18 @@ def test_operator_transfer_authorized_and_old_operator_loses_authority(
     deployed_board.transfer_operator(unauthorized_user)
     assert to_hex_addr(deployed_board.get_operator()) == to_hex_addr(unauthorized_user)
     assert deployed_board.get_version() == 2
+    info = json.loads(deployed_board.get_contract_info())
+    assert [to_hex_addr(upgrader) for upgrader in info["upgraders"]] == [
+        to_hex_addr(operator_address)
+    ]
 
     with direct_vm.expect_revert("unauthorized: caller is not operator"):
         deployed_board.create_incident(*args)
 
     direct_vm.sender = unauthorized_user
     assert deployed_board.create_incident(*args) == 1
+    with direct_vm.expect_revert("unauthorized: caller is not an upgrader"):
+        deployed_board.upgrade(b"operator must not gain upgrade authority")
 
 
 def test_operator_transfer_rejects_unauthorized_zero_and_same(
